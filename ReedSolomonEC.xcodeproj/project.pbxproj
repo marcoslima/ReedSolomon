@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		490052382C150CC40020462C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 490052372C150CC40020462C /* main.cpp */; };
 		49052FC92C15F5EB0037453D /* GaloisField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49052FC72C15F5EB0037453D /* GaloisField.cpp */; };
+		491136A02C17A7CE00ED71E8 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4911369F2C17A7CE00ED71E8 /* Utils.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		490052372C150CC40020462C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		49052FC72C15F5EB0037453D /* GaloisField.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GaloisField.cpp; sourceTree = "<group>"; };
 		49052FC82C15F5EB0037453D /* GaloisField.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GaloisField.hpp; sourceTree = "<group>"; };
+		4911369E2C175CE200ED71E8 /* Utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
+		4911369F2C17A7CE00ED71E8 /* Utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,8 @@
 				490052372C150CC40020462C /* main.cpp */,
 				49052FC72C15F5EB0037453D /* GaloisField.cpp */,
 				49052FC82C15F5EB0037453D /* GaloisField.hpp */,
+				4911369E2C175CE200ED71E8 /* Utils.hpp */,
+				4911369F2C17A7CE00ED71E8 /* Utils.cpp */,
 			);
 			path = ReedSolomonEC;
 			sourceTree = "<group>";
@@ -125,6 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				49052FC92C15F5EB0037453D /* GaloisField.cpp in Sources */,
+				491136A02C17A7CE00ED71E8 /* Utils.cpp in Sources */,
 				490052382C150CC40020462C /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -139,7 +145,7 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -200,7 +206,7 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
