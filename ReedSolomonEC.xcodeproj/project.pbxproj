@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		490052382C150CC40020462C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 490052372C150CC40020462C /* main.cpp */; };
-		490052402C1510760020462C /* ReedSolomon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4900523E2C1510760020462C /* ReedSolomon.cpp */; };
 		49052FC92C15F5EB0037453D /* GaloisField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49052FC72C15F5EB0037453D /* GaloisField.cpp */; };
 /* End PBXBuildFile section */
 
@@ -27,8 +26,6 @@
 /* Begin PBXFileReference section */
 		490052342C150CC40020462C /* ReedSolomonEC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ReedSolomonEC; sourceTree = BUILT_PRODUCTS_DIR; };
 		490052372C150CC40020462C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		4900523E2C1510760020462C /* ReedSolomon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ReedSolomon.cpp; sourceTree = "<group>"; };
-		4900523F2C1510760020462C /* ReedSolomon.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ReedSolomon.hpp; sourceTree = "<group>"; };
 		49052FC72C15F5EB0037453D /* GaloisField.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GaloisField.cpp; sourceTree = "<group>"; };
 		49052FC82C15F5EB0037453D /* GaloisField.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GaloisField.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,8 +61,6 @@
 			isa = PBXGroup;
 			children = (
 				490052372C150CC40020462C /* main.cpp */,
-				4900523E2C1510760020462C /* ReedSolomon.cpp */,
-				4900523F2C1510760020462C /* ReedSolomon.hpp */,
 				49052FC72C15F5EB0037453D /* GaloisField.cpp */,
 				49052FC82C15F5EB0037453D /* GaloisField.hpp */,
 			);
@@ -131,7 +126,6 @@
 			files = (
 				49052FC92C15F5EB0037453D /* GaloisField.cpp in Sources */,
 				490052382C150CC40020462C /* main.cpp in Sources */,
-				490052402C1510760020462C /* ReedSolomon.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

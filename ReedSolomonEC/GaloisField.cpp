@@ -6,3 +6,8 @@
 //
 
 #include "GaloisField.hpp"
+
+GaloisField::GaloisField()
+{
+    
+}

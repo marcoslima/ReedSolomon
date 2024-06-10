@@ -8,12 +8,12 @@
 #ifndef GaloisField_hpp
 #define GaloisField_hpp
 
-class GaloisField_
+class GaloisField
 {
 private:
     
 public:
-    
+    GaloisField();
 };
 
 #endif /* GaloisField_hpp */
