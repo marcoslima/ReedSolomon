@@ -11,6 +11,7 @@
 		49052FC92C15F5EB0037453D /* GaloisField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49052FC72C15F5EB0037453D /* GaloisField.cpp */; };
 		491136A02C17A7CE00ED71E8 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4911369F2C17A7CE00ED71E8 /* Utils.cpp */; };
 		491136A32C17E0CB00ED71E8 /* Polynomial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491136A12C17E0CB00ED71E8 /* Polynomial.cpp */; };
+		491136A62C1807DE00ED71E8 /* ReedSolomon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491136A42C1807DE00ED71E8 /* ReedSolomon.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +35,8 @@
 		4911369F2C17A7CE00ED71E8 /* Utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		491136A12C17E0CB00ED71E8 /* Polynomial.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Polynomial.cpp; sourceTree = "<group>"; };
 		491136A22C17E0CB00ED71E8 /* Polynomial.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Polynomial.hpp; sourceTree = "<group>"; };
+		491136A42C1807DE00ED71E8 /* ReedSolomon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ReedSolomon.cpp; sourceTree = "<group>"; };
+		491136A52C1807DE00ED71E8 /* ReedSolomon.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ReedSolomon.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,8 @@
 				491136A22C17E0CB00ED71E8 /* Polynomial.hpp */,
 				4911369F2C17A7CE00ED71E8 /* Utils.cpp */,
 				4911369E2C175CE200ED71E8 /* Utils.hpp */,
+				491136A42C1807DE00ED71E8 /* ReedSolomon.cpp */,
+				491136A52C1807DE00ED71E8 /* ReedSolomon.hpp */,
 			);
 			path = ReedSolomonEC;
 			sourceTree = "<group>";
@@ -138,6 +143,7 @@
 				491136A02C17A7CE00ED71E8 /* Utils.cpp in Sources */,
 				490052382C150CC40020462C /* main.cpp in Sources */,
 				491136A32C17E0CB00ED71E8 /* Polynomial.cpp in Sources */,
+				491136A62C1807DE00ED71E8 /* ReedSolomon.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,4 +7,4 @@
 
 #include "Utils.hpp"
 
-using namespace ReedSolomon;
+using namespace RS;

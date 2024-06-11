@@ -8,7 +8,7 @@
 #ifndef GaloisField_hpp
 #define GaloisField_hpp
 
-namespace ReedSolomon
+namespace RS
 {
 class GaloisField
 {

@@ -12,7 +12,7 @@
 #include "GaloisField.hpp"
 #include "Polynomial.hpp"
 
-using namespace ReedSolomon;
+using namespace RS;
 
 /*Polynomial::Polynomial()
 {

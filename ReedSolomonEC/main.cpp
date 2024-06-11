@@ -10,8 +10,9 @@
 #include "Utils.hpp"
 #include "GaloisField.hpp"
 #include "Polynomial.hpp"
+#include "ReedSolomon.hpp"
 
-using namespace ReedSolomon;
+using namespace RS;
 
 int main()
 {
@@ -22,6 +23,8 @@ int main()
     std::vector<RSWord> coeff{1, 2, 3};
     Polynomial p(coeff, &gf);
     p.Scale(42);
+    
+    ReedSolomon rs;
     
     return 0;
 }

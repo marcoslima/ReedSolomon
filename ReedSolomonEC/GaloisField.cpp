@@ -11,7 +11,7 @@
 #include "Utils.hpp"
 #include "GaloisField.hpp"
 
-using namespace ReedSolomon;
+using namespace RS;
 
 GaloisField::GaloisField(uint8_t exponent)
     : m_Exponent(exponent)

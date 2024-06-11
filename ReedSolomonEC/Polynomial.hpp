@@ -8,7 +8,7 @@
 #ifndef Polynomial_hpp
 #define Polynomial_hpp
 
-namespace ReedSolomon
+namespace RS
 {
 class Polynomial
 {

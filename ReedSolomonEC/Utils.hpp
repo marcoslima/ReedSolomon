@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace ReedSolomon
+namespace RS
 {
 using RSWord = uint8_t; // The size of a code word (currently one byte)
 
