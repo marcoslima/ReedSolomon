@@ -18,7 +18,7 @@ using namespace RS;
 {
 }*/
 
-Polynomial::Polynomial(const std::vector<RSWord>& coefficients, GaloisField* const galoisField)
+Polynomial::Polynomial(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField)
 {
     if(!galoisField)
         throw std::invalid_argument("GaloisField cannot be nullptr.");
@@ -28,7 +28,7 @@ Polynomial::Polynomial(const std::vector<RSWord>& coefficients, GaloisField* con
     m_GaloisField = galoisField;
 }
 
-Polynomial::Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* const galoisField)
+Polynomial::Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, const GaloisField* const galoisField)
 {
     if(!galoisField)
         throw std::invalid_argument("GaloisField cannot be nullptr.");
@@ -91,7 +91,7 @@ RSWord Polynomial::Evaluate(const RSWord x) const
     return result;
 }
 
-void Polynomial::SetNew(const std::vector<RSWord>& coefficients, GaloisField* const galoisField)
+void Polynomial::SetNew(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField)
 {
     if(!galoisField)
         throw std::invalid_argument("GaloisField cannot be nullptr.");
@@ -103,7 +103,7 @@ void Polynomial::SetNew(const std::vector<RSWord>& coefficients, GaloisField* co
     m_GaloisField = galoisField;
 }
 
-void Polynomial::SetNew(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* const galoisField)
+void Polynomial::SetNew(const RSWord* const coefficients, const uint16_t& numOfCoefficients, const GaloisField* const galoisField)
 {
     if(!galoisField)
         throw std::invalid_argument("GaloisField cannot be nullptr.");

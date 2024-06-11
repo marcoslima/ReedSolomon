@@ -13,7 +13,7 @@ namespace RS
 class GaloisField
 {
 private:
-    const uint32_t          m_PrimitivePolynomial;
+    const uint16_t          m_PrimitivePolynomial;
     
     const uint8_t           m_Characteristic = 2;
     uint8_t                 m_Exponent = 0;
@@ -25,10 +25,10 @@ private:
     void PrecomputeTables();
     
 public:
-    GaloisField(uint8_t exponent);
+    GaloisField(const uint8_t exponent);
     
-    RSWord Add(const RSWord x, const RSWord y) const;
-    RSWord Subtract(const RSWord x, const RSWord y) const;
+    RSWord Add(const RSWord x, const RSWord y) const noexcept;
+    RSWord Subtract(const RSWord x, const RSWord y) const noexcept;
     //RSWord MultiplyWithoutLookupTable(RSWord x, RSWord y) const;
     RSWord Multiply(const RSWord x, const RSWord y) const;
     RSWord Divide(const RSWord x, const RSWord y) const;

@@ -13,9 +13,11 @@ namespace RS
 class ReedSolomon
 {
 private:
+    const GaloisField* m_GaloisField = nullptr;
     
 public:
-    ReedSolomon();
+    ReedSolomon(const uint8_t exponent);
+    ~ReedSolomon();
 };
 };
 

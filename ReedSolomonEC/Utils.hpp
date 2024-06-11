@@ -26,7 +26,7 @@ public:
     Utils() = delete;
     
     template <IsInteger Integer>
-    static bool IsEven(const Integer& i);
+    static bool IsEven(const Integer& i) noexcept;
 
     template <IsInteger Integer>
     static std::vector<uint8_t> IntegerToBytes(const Integer& i);
@@ -36,7 +36,7 @@ public:
 };
 
 template <IsInteger Integer>
-bool Utils::IsEven(const Integer& i)
+bool Utils::IsEven(const Integer& i) noexcept
 {
     return !(i & 1);
 }

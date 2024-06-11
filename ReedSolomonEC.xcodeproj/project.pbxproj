@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		490052382C150CC40020462C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 490052372C150CC40020462C /* main.cpp */; };
 		49052FC92C15F5EB0037453D /* GaloisField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49052FC72C15F5EB0037453D /* GaloisField.cpp */; };
-		491136A02C17A7CE00ED71E8 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4911369F2C17A7CE00ED71E8 /* Utils.cpp */; };
 		491136A32C17E0CB00ED71E8 /* Polynomial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491136A12C17E0CB00ED71E8 /* Polynomial.cpp */; };
 		491136A62C1807DE00ED71E8 /* ReedSolomon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491136A42C1807DE00ED71E8 /* ReedSolomon.cpp */; };
 /* End PBXBuildFile section */
@@ -32,7 +31,6 @@
 		49052FC72C15F5EB0037453D /* GaloisField.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GaloisField.cpp; sourceTree = "<group>"; };
 		49052FC82C15F5EB0037453D /* GaloisField.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GaloisField.hpp; sourceTree = "<group>"; };
 		4911369E2C175CE200ED71E8 /* Utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
-		4911369F2C17A7CE00ED71E8 /* Utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		491136A12C17E0CB00ED71E8 /* Polynomial.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Polynomial.cpp; sourceTree = "<group>"; };
 		491136A22C17E0CB00ED71E8 /* Polynomial.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Polynomial.hpp; sourceTree = "<group>"; };
 		491136A42C1807DE00ED71E8 /* ReedSolomon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ReedSolomon.cpp; sourceTree = "<group>"; };
@@ -74,7 +72,6 @@
 				49052FC82C15F5EB0037453D /* GaloisField.hpp */,
 				491136A12C17E0CB00ED71E8 /* Polynomial.cpp */,
 				491136A22C17E0CB00ED71E8 /* Polynomial.hpp */,
-				4911369F2C17A7CE00ED71E8 /* Utils.cpp */,
 				4911369E2C175CE200ED71E8 /* Utils.hpp */,
 				491136A42C1807DE00ED71E8 /* ReedSolomon.cpp */,
 				491136A52C1807DE00ED71E8 /* ReedSolomon.hpp */,
@@ -140,7 +137,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				49052FC92C15F5EB0037453D /* GaloisField.cpp in Sources */,
-				491136A02C17A7CE00ED71E8 /* Utils.cpp in Sources */,
 				490052382C150CC40020462C /* main.cpp in Sources */,
 				491136A32C17E0CB00ED71E8 /* Polynomial.cpp in Sources */,
 				491136A62C1807DE00ED71E8 /* ReedSolomon.cpp in Sources */,

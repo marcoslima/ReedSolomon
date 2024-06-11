@@ -13,12 +13,14 @@
 
 using namespace RS;
 
-GaloisField::GaloisField(uint8_t exponent)
-    : m_Exponent(exponent)
-    , m_PrimitivePolynomial(0x11d)
+GaloisField::GaloisField(const uint8_t exponent)
+    : m_PrimitivePolynomial(285)
+    , m_Exponent(exponent)
 {
     if(m_Exponent < 1)
         throw std::invalid_argument("Exponent must be greater than zero.");
+    if(m_Exponent > 32)
+        throw std::invalid_argument("Exponent must be smaller than 32.");
     
     m_Cardinality = std::pow(m_Characteristic, m_Exponent);
     
@@ -59,12 +61,12 @@ void GaloisField::PrecomputeTables()
         std::cout << "log " << i << " = " << (int)m_LogarithmicTable[i] << std::endl;*/
 }
 
-RSWord GaloisField::Add(const RSWord x, const RSWord y) const
+RSWord GaloisField::Add(const RSWord x, const RSWord y) const noexcept
 {
     return x ^ y;
 }
 
-RSWord GaloisField::Subtract(const RSWord x, const RSWord y) const
+RSWord GaloisField::Subtract(const RSWord x, const RSWord y) const noexcept
 {
     return x ^ y; // Same as addition for binary Galois field (mod 2)
 }

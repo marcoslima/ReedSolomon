@@ -16,12 +16,12 @@ private:
     uint16_t            m_NumOfCoefficients = 0;
     std::vector<RSWord> m_Coefficients;
     
-    GaloisField*        m_GaloisField;
+    const GaloisField*  m_GaloisField;
     
 public:
     //Polynomial();
-    Polynomial(const std::vector<RSWord>& coefficients, GaloisField* const galoisField);
-    Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* const galoisField);
+    Polynomial(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField);
+    Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, const GaloisField* const galoisField);
     
     void Add(const Polynomial* const polynomial);
     void Scale(const RSWord scalar);
@@ -31,8 +31,8 @@ public:
     uint16_t GetNumberOfCoefficients() const { return m_NumOfCoefficients; }
     const std::vector<RSWord>* const GetCoefficients() const { return &m_Coefficients; }
     
-    void SetNew(const std::vector<RSWord>& coefficients, GaloisField* const galoisField);
-    void SetNew(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* const galoisField);
+    void SetNew(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField);
+    void SetNew(const RSWord* const coefficients, const uint16_t& numOfCoefficients, const GaloisField* const galoisField);
 };
 };
 

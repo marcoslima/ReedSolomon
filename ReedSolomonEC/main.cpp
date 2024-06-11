@@ -24,7 +24,7 @@ int main()
     Polynomial p(coeff, &gf);
     p.Scale(42);
     
-    ReedSolomon rs;
+    ReedSolomon rs(8);
     
     return 0;
 }
