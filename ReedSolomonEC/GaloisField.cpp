@@ -5,17 +5,15 @@
 //  Created by Marc Schöndorf on 09.06.24.
 //
 
-#include <iostream>
-
 #include <cstdint>
 #include <vector>
 
-#include "GaloisField.hpp"
 #include "Utils.hpp"
+#include "GaloisField.hpp"
 
 using namespace ReedSolomon;
 
-GaloisField::GaloisField(const uint8_t& exponent)
+GaloisField::GaloisField(uint8_t exponent)
     : m_Exponent(exponent)
     , m_PrimitivePolynomial(0x11d)
 {
@@ -49,7 +47,7 @@ void GaloisField::PrecomputeTables()
         m_LogarithmicTable[static_cast<RSWord>(x)] = i;
     }
     
-    // Extend exponential table to double the size for optimization (don't need modulo then)
+    // Extend exponential table to double the size for optimization (don't need modulo later)
     for(uint16_t i = m_Cardinality - 1; i < (m_Cardinality * 2); i++)
         m_ExponentialTable[i] = m_ExponentialTable[i - m_Cardinality - 1];
     

@@ -9,14 +9,16 @@
 
 #include "Utils.hpp"
 #include "GaloisField.hpp"
+#include "Polynomial.hpp"
 
 using namespace ReedSolomon;
 
 int main()
 {
-    std::cout << "Reed-Solomon error correction" << std::endl;
+    std::cout << "Reed-Solomon error correction" << std::endl << std::endl;
     
-    GaloisField(8); // GF(2^8)
+    GaloisField gf(8); // GF(2^8)
+    //Polynomial p(nullptr, 0);
     
     return 0;
 }

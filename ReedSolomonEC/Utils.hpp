@@ -15,6 +15,8 @@
 
 namespace ReedSolomon
 {
+using RSWord = uint8_t; // The size of a code word (currently one byte)
+
 template <typename IntegerType>
 concept IsInteger = std::is_integral_v<IntegerType>;
 
@@ -58,7 +60,7 @@ Integer Utils::BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEnd
         std::reverse(bytes.begin(), bytes.end());
     
     Integer i = 0;
-    std::memcpy(&i, bytes, sizeof(Integer));
+    std::memcpy(&i, bytes.data(), sizeof(Integer));
     
     return i;
 }

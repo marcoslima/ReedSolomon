@@ -10,8 +10,6 @@
 
 namespace ReedSolomon
 {
-using RSWord = uint8_t; // The size of a code word (currently one byte)
-
 class GaloisField
 {
 private:
@@ -27,7 +25,7 @@ private:
     void PrecomputeTables();
     
 public:
-    GaloisField(const uint8_t& exponent);
+    GaloisField(uint8_t exponent);
     
     inline RSWord Add(RSWord x, RSWord y) const;
     inline RSWord Subtract(RSWord x, RSWord y) const;
