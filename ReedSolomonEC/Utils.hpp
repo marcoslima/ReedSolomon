@@ -23,7 +23,8 @@ class Utils
 public:
     Utils() = delete;
     
-    static bool IsEven(const uint8_t& i);
+    template <IsInteger Integer>
+    static bool IsEven(const Integer& i);
 
     template <IsInteger Integer>
     static std::vector<uint8_t> IntegerToBytes(const Integer& i);
@@ -31,6 +32,12 @@ public:
     template <IsInteger Integer>
     static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianess = false);
 };
+
+template <IsInteger Integer>
+bool Utils::IsEven(const Integer& i)
+{
+    return !(i & 1);
+}
 
 template <IsInteger Integer>
 std::vector<uint8_t> Utils::IntegerToBytes(const Integer& i)

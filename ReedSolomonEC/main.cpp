@@ -16,10 +16,7 @@ int main()
 {
     std::cout << "Reed-Solomon error correction" << std::endl;
     
-    GaloisField();
-    
-    Utils::IsEven(2);
-    Utils::IntegerToBytes<uint32_t>(5);
+    GaloisField(8); // GF(2^8)
     
     return 0;
 }
