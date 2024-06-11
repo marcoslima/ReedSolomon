@@ -18,13 +18,20 @@ int main()
 {
     std::cout << "Reed-Solomon error correction" << std::endl << std::endl;
     
-    GaloisField gf(8); // GF(2^8)
-    
-    std::vector<RSWord> coeff{1, 2, 3};
-    Polynomial p(coeff, &gf);
-    p.Scale(42);
+    const std::vector<RSWord> message = Utils::StringToRSWordVector("Hello World!");
     
     ReedSolomon rs(8);
+    const std::vector<RSWord> encoded = rs.Encode(message, 5);
+    
+    std::cout << "Message: ";
+    for(auto i : message)
+        std::cout << i << " ";
+    
+    std::cout << std::endl;
+    
+    std::cout << "Encoded: ";
+    for(auto i : encoded)
+        std::cout << i << " ";
     
     return 0;
 }

@@ -34,6 +34,9 @@ public:
     RSWord Divide(const RSWord x, const RSWord y) const;
     RSWord Pow(const RSWord x, const RSWord power) const;
     RSWord Inverse(const RSWord x) const;
+    
+    const std::vector<RSWord>* const GetExponentialTable() const { return &m_ExponentialTable; }
+    const std::vector<RSWord>* const GetLogarithmicTable() const { return &m_LogarithmicTable; }
 };
 };
 

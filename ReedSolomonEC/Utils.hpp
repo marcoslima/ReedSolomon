@@ -33,6 +33,14 @@ public:
 
     template <IsInteger Integer>
     static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianess = false);
+    
+    static std::vector<RSWord> StringToRSWordVector(const std::string& str)
+    {
+        std::vector<RSWord> result(str.length());
+        std::copy(str.begin(), str.end(), result.begin());
+        
+        return result;
+    }
 };
 
 template <IsInteger Integer>

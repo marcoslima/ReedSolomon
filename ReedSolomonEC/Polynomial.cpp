@@ -5,6 +5,8 @@
 //  Created by Marc Schöndorf on 11.06.24.
 //
 
+#include <assert.h>
+
 #include <cstdint>
 #include <vector>
 
@@ -14,9 +16,12 @@
 
 using namespace RS;
 
-/*Polynomial::Polynomial()
+Polynomial::Polynomial(const GaloisField* const galoisField)
+    : m_GaloisField(galoisField)
 {
-}*/
+    if(!galoisField)
+        throw std::invalid_argument("GaloisField cannot be nullptr.");
+}
 
 Polynomial::Polynomial(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField)
 {
@@ -82,6 +87,45 @@ void Polynomial::Multiply(const Polynomial* const polynomial)
     m_Coefficients = coefficients;
 }
 
+// Extended synthetic division
+// Function expects polynomials sorted from biggest to lowest degree
+void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quotient, Polynomial* const remainder)
+{
+    std::vector<RSWord> tmp = m_Coefficients;
+    const RSWord normalizer = divisor->m_Coefficients[0];
+    
+    const uint16_t upperLimit = m_NumOfCoefficients - divisor->m_NumOfCoefficients + 1;
+    
+    for(uint16_t i = 0; i < upperLimit; i++)
+    {
+        tmp[i] = m_GaloisField->Divide(tmp[i], normalizer); // Needed for non monic polynomials
+        const RSWord coefficient = tmp[i];
+        
+        // Skip log(0)
+        if(coefficient == 0)
+            continue;
+        
+        for(uint16_t j = 1; j < divisor->m_NumOfCoefficients; j++)
+        {
+            if(divisor->m_Coefficients[j] != 0) // Skip log(0)
+                tmp[i + j] ^= m_GaloisField->Multiply(divisor->m_Coefficients[j], coefficient);
+        }
+    }
+    
+    // Save result
+    m_Coefficients = tmp;
+    
+    const uint16_t separator = m_NumOfCoefficients - divisor->m_NumOfCoefficients + 1;
+    
+    // Extract quotient
+    if(quotient)
+        quotient->SetNew(tmp.data(), separator);
+    
+    // Extract remainder
+    if(remainder)
+        remainder->SetNew(tmp.data() + separator, divisor->m_NumOfCoefficients - 1);
+}
+
 RSWord Polynomial::Evaluate(const RSWord x) const
 {
     RSWord result = m_Coefficients[0];
@@ -93,21 +137,17 @@ RSWord Polynomial::Evaluate(const RSWord x) const
 
 void Polynomial::SetNew(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField)
 {
-    if(!galoisField)
-        throw std::invalid_argument("GaloisField cannot be nullptr.");
-    
-    m_Coefficients.clear();
+    //m_Coefficients.clear();
     
     m_Coefficients = coefficients;
     m_NumOfCoefficients = static_cast<uint16_t>(m_Coefficients.size());
-    m_GaloisField = galoisField;
+    
+    if(galoisField)
+        m_GaloisField = galoisField;
 }
 
 void Polynomial::SetNew(const RSWord* const coefficients, const uint16_t& numOfCoefficients, const GaloisField* const galoisField)
 {
-    if(!galoisField)
-        throw std::invalid_argument("GaloisField cannot be nullptr.");
-    
     if(!coefficients)
         throw std::invalid_argument("Coefficients cannot be nullptr.");
     
@@ -120,5 +160,6 @@ void Polynomial::SetNew(const RSWord* const coefficients, const uint16_t& numOfC
     m_Coefficients.resize(m_NumOfCoefficients);
     std::memcpy(m_Coefficients.data(), coefficients, sizeof(RSWord) * m_NumOfCoefficients);
     
-    m_GaloisField = galoisField;
+    if(galoisField)
+        m_GaloisField = galoisField;
 }
