@@ -16,10 +16,16 @@ private:
     uint16_t            m_NumOfCoefficients = 0;
     std::vector<RSWord> m_Coefficients;
     
+    GaloisField*        m_GaloisField;
+    
 public:
     //Polynomial();
-    Polynomial(const std::vector<RSWord>& coefficients);
-    Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients);
+    Polynomial(const std::vector<RSWord>& coefficients, GaloisField* galoisField);
+    Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* galoisField);
+    
+    inline void Add(const Polynomial* const polynomial);
+    inline void Multiply(const RSWord scalar);
+    inline void Multiply(const Polynomial* const polynomial);
 };
 };
 
