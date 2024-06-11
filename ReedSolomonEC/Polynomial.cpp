@@ -18,19 +18,29 @@ using namespace RS;
 {
 }*/
 
-Polynomial::Polynomial(const std::vector<RSWord>& coefficients, GaloisField* galoisField)
+Polynomial::Polynomial(const std::vector<RSWord>& coefficients, GaloisField* const galoisField)
 {
+    if(!galoisField)
+        throw std::invalid_argument("GaloisField cannot be nullptr.");
+    
     m_Coefficients = coefficients;
     m_NumOfCoefficients = static_cast<uint16_t>(m_Coefficients.size());
     m_GaloisField = galoisField;
 }
 
-Polynomial::Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* galoisField)
+Polynomial::Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* const galoisField)
 {
+    if(!galoisField)
+        throw std::invalid_argument("GaloisField cannot be nullptr.");
+    
+    if(!coefficients)
+        throw std::invalid_argument("Coefficients cannot be nullptr.");
+    
     if(numOfCoefficients < 1)
         throw std::invalid_argument("Number of coefficients must be greater than zero.");
     
     m_NumOfCoefficients = numOfCoefficients;
+    m_Coefficients.resize(m_NumOfCoefficients);
     std::memcpy(m_Coefficients.data(), coefficients, sizeof(RSWord) * m_NumOfCoefficients);
     
     m_GaloisField = galoisField;
@@ -51,7 +61,7 @@ void Polynomial::Add(const Polynomial* const polynomial)
     m_Coefficients = coefficients;
 }
 
-void Polynomial::Scale(RSWord scalar)
+void Polynomial::Scale(const RSWord scalar)
 {
     for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
         m_Coefficients[i] = m_GaloisField->Multiply(m_Coefficients[i], scalar);
@@ -79,4 +89,36 @@ RSWord Polynomial::Evaluate(const RSWord x) const
         result = m_GaloisField->Multiply(result, x) ^ m_Coefficients[i];
     
     return result;
+}
+
+void Polynomial::SetNew(const std::vector<RSWord>& coefficients, GaloisField* const galoisField)
+{
+    if(!galoisField)
+        throw std::invalid_argument("GaloisField cannot be nullptr.");
+    
+    m_Coefficients.clear();
+    
+    m_Coefficients = coefficients;
+    m_NumOfCoefficients = static_cast<uint16_t>(m_Coefficients.size());
+    m_GaloisField = galoisField;
+}
+
+void Polynomial::SetNew(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* const galoisField)
+{
+    if(!galoisField)
+        throw std::invalid_argument("GaloisField cannot be nullptr.");
+    
+    if(!coefficients)
+        throw std::invalid_argument("Coefficients cannot be nullptr.");
+    
+    if(numOfCoefficients < 1)
+        throw std::invalid_argument("Number of coefficients must be greater than zero.");
+    
+    m_Coefficients.clear();
+    
+    m_NumOfCoefficients = numOfCoefficients;
+    m_Coefficients.resize(m_NumOfCoefficients);
+    std::memcpy(m_Coefficients.data(), coefficients, sizeof(RSWord) * m_NumOfCoefficients);
+    
+    m_GaloisField = galoisField;
 }
