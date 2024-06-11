@@ -18,7 +18,10 @@ int main()
     std::cout << "Reed-Solomon error correction" << std::endl << std::endl;
     
     GaloisField gf(8); // GF(2^8)
-    //Polynomial p(nullptr, 0);
+    
+    std::vector<RSWord> coeff{1, 2, 3};
+    Polynomial p(coeff, &gf);
+    p.Scale(42);
     
     return 0;
 }

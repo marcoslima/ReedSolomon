@@ -27,13 +27,13 @@ private:
 public:
     GaloisField(uint8_t exponent);
     
-    inline RSWord Add(const RSWord x, const RSWord y) const;
-    inline RSWord Subtract(const RSWord x, const RSWord y) const;
-    //inline RSWord MultiplyWithoutLookupTable(RSWord x, RSWord y) const;
-    inline RSWord Multiply(const RSWord x, const RSWord y) const;
-    inline RSWord Divide(const RSWord x, const RSWord y) const;
-    inline RSWord Pow(const RSWord x, const RSWord power) const;
-    inline RSWord Inverse(const RSWord x) const;
+    RSWord Add(const RSWord x, const RSWord y) const;
+    RSWord Subtract(const RSWord x, const RSWord y) const;
+    //RSWord MultiplyWithoutLookupTable(RSWord x, RSWord y) const;
+    RSWord Multiply(const RSWord x, const RSWord y) const;
+    RSWord Divide(const RSWord x, const RSWord y) const;
+    RSWord Pow(const RSWord x, const RSWord power) const;
+    RSWord Inverse(const RSWord x) const;
 };
 };
 

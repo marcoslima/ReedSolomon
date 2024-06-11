@@ -36,7 +36,7 @@ Polynomial::Polynomial(const RSWord* const coefficients, const uint16_t& numOfCo
     m_GaloisField = galoisField;
 }
 
-inline void Polynomial::Add(const Polynomial* const polynomial)
+void Polynomial::Add(const Polynomial* const polynomial)
 {
     const uint16_t numCoefficients = std::max(m_NumOfCoefficients, polynomial->m_NumOfCoefficients);
     std::vector<RSWord> coefficients(numCoefficients, 0);
@@ -51,12 +51,32 @@ inline void Polynomial::Add(const Polynomial* const polynomial)
     m_Coefficients = coefficients;
 }
 
-inline void Polynomial::Multiply(const RSWord scalar)
+void Polynomial::Scale(RSWord scalar)
 {
     for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
         m_Coefficients[i] = m_GaloisField->Multiply(m_Coefficients[i], scalar);
 }
 
-inline void Polynomial::Multiply(const Polynomial* const polynomial)
+void Polynomial::Multiply(const Polynomial* const polynomial)
 {
+    const uint16_t numCoefficients = m_NumOfCoefficients + polynomial->m_NumOfCoefficients - 1;
+    std::vector<RSWord> coefficients(numCoefficients, 0);
+    
+    for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
+    {
+        for(uint16_t j = 0; j < polynomial->m_NumOfCoefficients; j++)
+            coefficients[i + j] ^= m_GaloisField->Multiply(m_Coefficients[i], polynomial->m_Coefficients[j]);
+    }
+    
+    m_NumOfCoefficients = numCoefficients;
+    m_Coefficients = coefficients;
+}
+
+RSWord Polynomial::Evaluate(const RSWord x) const
+{
+    RSWord result = m_Coefficients[0];
+    for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
+        result = m_GaloisField->Multiply(result, x) ^ m_Coefficients[i];
+    
+    return result;
 }

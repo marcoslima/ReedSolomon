@@ -59,18 +59,18 @@ void GaloisField::PrecomputeTables()
         std::cout << "log " << i << " = " << (int)m_LogarithmicTable[i] << std::endl;*/
 }
 
-inline RSWord GaloisField::Add(const RSWord x, const RSWord y) const
+RSWord GaloisField::Add(const RSWord x, const RSWord y) const
 {
     return x ^ y;
 }
 
-inline RSWord GaloisField::Subtract(const RSWord x, const RSWord y) const
+RSWord GaloisField::Subtract(const RSWord x, const RSWord y) const
 {
     return x ^ y; // Same as addition for binary Galois field (mod 2)
 }
 
 //Russian Peasant Multiplication
-/*inline RSWord GaloisField::MultiplyWithoutLookupTable(RSWord x, RSWord y) const
+/*RSWord GaloisField::MultiplyWithoutLookupTable(RSWord x, RSWord y) const
 {
     RSWord result = 0;
     
@@ -89,7 +89,7 @@ inline RSWord GaloisField::Subtract(const RSWord x, const RSWord y) const
     return result;
 }*/
 
-inline RSWord GaloisField::Multiply(const RSWord x, const RSWord y) const
+RSWord GaloisField::Multiply(const RSWord x, const RSWord y) const
 {
     if(x == 0 || y == 0)
         return 0;
@@ -99,7 +99,7 @@ inline RSWord GaloisField::Multiply(const RSWord x, const RSWord y) const
     return m_ExponentialTable[index];
 }
 
-inline RSWord GaloisField::Divide(const RSWord x, const RSWord y) const
+RSWord GaloisField::Divide(const RSWord x, const RSWord y) const
 {
     if(y == 0)
         throw std::invalid_argument("Division by zero.");
@@ -112,14 +112,14 @@ inline RSWord GaloisField::Divide(const RSWord x, const RSWord y) const
     return m_ExponentialTable[index];
 }
 
-inline RSWord GaloisField::Pow(const RSWord x, const RSWord power) const
+RSWord GaloisField::Pow(const RSWord x, const RSWord power) const
 {
     const uint16_t index = (m_LogarithmicTable[x] * power) % (m_Cardinality - 1);
     
     return m_ExponentialTable[index];
 }
 
-inline RSWord GaloisField::Inverse(const RSWord x) const
+RSWord GaloisField::Inverse(const RSWord x) const
 {
     const uint16_t index = (m_Cardinality - 1) - m_LogarithmicTable[x];
     

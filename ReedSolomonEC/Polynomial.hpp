@@ -23,9 +23,10 @@ public:
     Polynomial(const std::vector<RSWord>& coefficients, GaloisField* galoisField);
     Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, GaloisField* galoisField);
     
-    inline void Add(const Polynomial* const polynomial);
-    inline void Multiply(const RSWord scalar);
-    inline void Multiply(const Polynomial* const polynomial);
+    void Add(const Polynomial* const polynomial);
+    void Scale(RSWord scalar);
+    void Multiply(const Polynomial* const polynomial);
+    RSWord Evaluate(const RSWord x) const;
 };
 };
 
