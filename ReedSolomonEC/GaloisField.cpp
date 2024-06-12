@@ -16,13 +16,12 @@ using namespace RS;
 GaloisField::GaloisField(const uint8_t exponent)
     : m_PrimitivePolynomial(285)
     , m_Exponent(exponent)
+    , m_Cardinality(std::pow(m_Characteristic, m_Exponent))
 {
     if(m_Exponent < 1)
         throw std::invalid_argument("Exponent must be greater than zero.");
     if(m_Exponent > 32)
         throw std::invalid_argument("Exponent must be smaller than 32.");
-    
-    m_Cardinality = std::pow(m_Characteristic, m_Exponent);
     
     PrecomputeTables();
 }

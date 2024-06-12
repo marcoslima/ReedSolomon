@@ -16,8 +16,8 @@ private:
     const uint16_t          m_PrimitivePolynomial;
     
     const uint8_t           m_Characteristic = 2;
-    uint8_t                 m_Exponent = 0;
-    uint32_t                m_Cardinality = 0;
+    const uint8_t           m_Exponent = 0;
+    const uint32_t          m_Cardinality = 0;
     
     std::vector<RSWord>     m_ExponentialTable;
     std::vector<RSWord>     m_LogarithmicTable;

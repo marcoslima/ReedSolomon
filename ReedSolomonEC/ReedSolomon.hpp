@@ -13,15 +13,22 @@ namespace RS
 class ReedSolomon
 {
 private:
-    const GaloisField* m_GaloisField = nullptr;
+    const GaloisField*      m_GaloisField = nullptr;
     
-    Polynomial CreateGeneratorPolynomial(const uint16_t numOfECSymbols);
+    const uint8_t           m_NumOfErrorCorrectingSymbols = 0;
+    Polynomial*             m_GeneratorPolynomial = nullptr;
+    
+    void        CreateGeneratorPolynomial(const uint8_t numOfECSymbols);
+    Polynomial  CalculateSyndromes(const Polynomial& message) const;
+    bool        CheckSyndromes(const Polynomial& syndromes) const;
     
 public:
-    ReedSolomon(const uint8_t exponent);
+    ReedSolomon(const uint8_t exponent, const uint8_t numOfErrorCorrectingSymbols);
     ~ReedSolomon();
     
-    std::vector<RSWord> Encode(const std::vector<RSWord>& message, const uint16_t numOfECSymbols);
+    std::vector<RSWord> Encode(const std::vector<RSWord>& message) const;
+    
+    bool IsMessageCorrupted(const std::vector<RSWord>& message);
 };
 };
 

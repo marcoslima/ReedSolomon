@@ -5,8 +5,6 @@
 //  Created by Marc Schöndorf on 11.06.24.
 //
 
-#include <assert.h>
-
 #include <cstdint>
 #include <vector>
 
