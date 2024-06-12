@@ -15,8 +15,8 @@ class GaloisField
 private:
     const uint32_t          m_PrimitivePolynomial;
     
-    const uint8_t           m_Characteristic = 2;
-    const uint8_t           m_Exponent = 0;
+    const uint32_t          m_Characteristic = 2;
+    const uint32_t          m_Exponent = 0;
     const uint32_t          m_Cardinality = 0;
     
     std::vector<RSWord>     m_ExponentialTable;
@@ -25,7 +25,7 @@ private:
     void PrecomputeTables();
     
 public:
-    GaloisField(const uint8_t exponent);
+    GaloisField(const uint32_t exponent);
     
     RSWord Add(const RSWord x, const RSWord y) const noexcept;
     RSWord Subtract(const RSWord x, const RSWord y) const noexcept;

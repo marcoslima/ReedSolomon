@@ -5,6 +5,7 @@
 //  Created by Marc Schöndorf on 09.06.24.
 //
 
+#include <iostream>
 #include <cstdint>
 #include <vector>
 
@@ -13,10 +14,10 @@
 
 using namespace RS;
 
-GaloisField::GaloisField(const uint8_t exponent)
-    : m_PrimitivePolynomial(0x11d)
+GaloisField::GaloisField(const uint32_t exponent)
+    : m_PrimitivePolynomial(285)
     , m_Exponent(exponent)
-    , m_Cardinality(std::pow(m_Characteristic, m_Exponent))
+    , m_Cardinality(1 << exponent) // 2^exponent
 {
     if(m_Exponent < 1)
         throw std::invalid_argument("Exponent must be greater than zero.");
@@ -37,7 +38,7 @@ void GaloisField::PrecomputeTables()
     
     // Precompute
     uint32_t x = 1;
-    for(uint32_t i = 1; i < m_Cardinality - 1; i++)
+    for(uint32_t i = 1; i < (m_Cardinality - 1); i++)
     {
         x *= 2;
         
@@ -49,14 +50,14 @@ void GaloisField::PrecomputeTables()
     }
     
     // Extend exponential table to double the size for optimization (don't need modulo later)
-    for(uint32_t i = m_Cardinality - 1; i < (m_Cardinality - 1) * 2; i++)
-        m_ExponentialTable[i] = m_ExponentialTable[i - m_Cardinality - 1];
+    for(uint32_t i = (m_Cardinality - 1); i < (m_Cardinality - 1) * 2; i++)
+        m_ExponentialTable[i] = m_ExponentialTable[i - (m_Cardinality - 1)];
     
     // Debug print
-    /*for(uint16_t i = 0; i < m_Cardinality * 2; i++)
+    for(uint32_t i = 0; i < (m_Cardinality - 1) * 2; i++)
         std::cout << "2^" << i << " = " << (int)m_ExponentialTable[i] << std::endl;
     
-    for(uint16_t i = 0; i < m_Cardinality; i++)
+    /*for(uint32_t i = 0; i < m_Cardinality; i++)
         std::cout << "log " << i << " = " << (int)m_LogarithmicTable[i] << std::endl;*/
 }
 
@@ -95,7 +96,7 @@ RSWord GaloisField::Multiply(const RSWord x, const RSWord y) const
     if(x == 0 || y == 0)
         return 0;
     
-    const uint16_t index = m_LogarithmicTable[x] + m_LogarithmicTable[y];
+    const uint32_t index = m_LogarithmicTable[x] + m_LogarithmicTable[y];
     
     return m_ExponentialTable[index];
 }
@@ -107,22 +108,22 @@ RSWord GaloisField::Divide(const RSWord x, const RSWord y) const
     if(x == 0)
         return 0;
         
-    //const uint16_t index = (m_LogarithmicTable[x] + (m_Cardinality - 1) - m_LogarithmicTable[y]) % (m_Cardinality - 1);
-    const uint16_t index = (m_LogarithmicTable[x] - m_LogarithmicTable[y] + m_Cardinality - 1);
+    //const uint32_t index = (m_LogarithmicTable[x] + (m_Cardinality - 1) - m_LogarithmicTable[y]) % (m_Cardinality - 1);
+    const uint32_t index = (m_LogarithmicTable[x] - m_LogarithmicTable[y] + (m_Cardinality - 1));
     
     return m_ExponentialTable[index];
 }
 
 RSWord GaloisField::Pow(const RSWord x, const RSWord power) const
 {
-    const uint16_t index = (m_LogarithmicTable[x] * power) % (m_Cardinality - 1);
+    const uint32_t index = (m_LogarithmicTable[x] * power) % (m_Cardinality - 1);
     
     return m_ExponentialTable[index];
 }
 
 RSWord GaloisField::Inverse(const RSWord x) const
 {
-    const uint16_t index = (m_Cardinality - 1) - m_LogarithmicTable[x];
+    const uint32_t index = (m_Cardinality - 1) - m_LogarithmicTable[x];
     
     return m_ExponentialTable[index];
 }
