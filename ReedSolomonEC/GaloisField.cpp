@@ -5,7 +5,6 @@
 //  Created by Marc Schöndorf on 09.06.24.
 //
 
-#include <iostream>
 #include <cstdint>
 #include <vector>
 
@@ -54,10 +53,10 @@ void GaloisField::PrecomputeTables()
         m_ExponentialTable[i] = m_ExponentialTable[i - (m_Cardinality - 1)];
     
     // Debug print
-    for(uint32_t i = 0; i < (m_Cardinality - 1) * 2; i++)
+    /*for(uint32_t i = 0; i < (m_Cardinality - 1) * 2; i++)
         std::cout << "2^" << i << " = " << (int)m_ExponentialTable[i] << std::endl;
     
-    /*for(uint32_t i = 0; i < m_Cardinality; i++)
+    for(uint32_t i = 0; i < m_Cardinality; i++)
         std::cout << "log " << i << " = " << (int)m_LogarithmicTable[i] << std::endl;*/
 }
 
