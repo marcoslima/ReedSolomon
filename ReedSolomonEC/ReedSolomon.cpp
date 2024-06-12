@@ -92,3 +92,27 @@ bool ReedSolomon::IsMessageCorrupted(const std::vector<RSWord>& message)
     
     return !CheckSyndromes(syndromes);
 }
+
+Polynomial ReedSolomon::CalculateErasureLocatorPolynomial(const std::vector<uint32_t>& erasurePositions) const
+{
+    Polynomial erasureLocator({1}, m_GaloisField);
+    Polynomial factor({0, 1}, m_GaloisField);
+
+    for(uint32_t i : erasurePositions)
+    {
+        factor[0] = m_GaloisField->GetExponentialTable()[i];
+        erasureLocator.Multiply(&factor);
+    }
+    
+    return erasureLocator;
+}
+
+Polynomial ReedSolomon::CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial) const
+{
+    Polynomial result = syndromes;
+    result.Multiply(&erasureLocatorPolynomial);
+    //result.Shrink(m_NumOfErrorCorrectingSymbols);
+    result.Shrink(m_NumOfErrorCorrectingSymbols + 1);
+    
+    return result;
+}

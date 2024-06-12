@@ -20,8 +20,13 @@ private:
     
     // Methods
     void        CreateGeneratorPolynomial(const uint32_t numOfECSymbols);
+    
     Polynomial  CalculateSyndromes(const Polynomial& message) const;
     bool        CheckSyndromes(const Polynomial& syndromes) const;
+    
+    Polynomial  CalculateErasureLocatorPolynomial(const std::vector<uint32_t>& erasurePositions) const;
+    Polynomial  CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial) const;
+    
     
 public:
     ReedSolomon(const uint32_t exponent, const uint32_t numOfErrorCorrectingSymbols);

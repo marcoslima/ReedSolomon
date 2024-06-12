@@ -144,6 +144,15 @@ void Polynomial::Enlarge(const uint32_t add, const RSWord value)
     m_Coefficients.resize(m_NumOfCoefficients, value);
 }
 
+void Polynomial::Shrink(const uint32_t subtract)
+{
+    if(subtract > m_NumOfCoefficients)
+        throw std::invalid_argument("Cannot shrink more than the size of the polynomial.");
+    
+    m_NumOfCoefficients -= subtract;
+    m_Coefficients.resize(m_NumOfCoefficients);
+}
+
 void Polynomial::SetNew(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField)
 {
     m_Coefficients = coefficients;

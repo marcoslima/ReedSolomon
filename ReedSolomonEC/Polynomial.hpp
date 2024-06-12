@@ -30,6 +30,7 @@ public:
     RSWord Evaluate(const RSWord x) const;
     
     void Enlarge(const uint32_t add, const RSWord value = 0);
+    void Shrink(const uint32_t subtract);
     
     uint32_t GetNumberOfCoefficients() const { return m_NumOfCoefficients; }
     const std::vector<RSWord>* const GetCoefficients() const noexcept { return &m_Coefficients; }
