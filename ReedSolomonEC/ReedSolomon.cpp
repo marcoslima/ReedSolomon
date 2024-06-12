@@ -30,16 +30,14 @@ ReedSolomon::~ReedSolomon()
 }
 
 // Create irreducible generator polynomial
-void ReedSolomon::CreateGeneratorPolynomial(const uint8_t numOfECSymbols)
+void ReedSolomon::CreateGeneratorPolynomial(const uint32_t numOfECSymbols)
 {
     Polynomial factor({1, 0}, m_GaloisField);
     
-    for (uint16_t i = 0; i < numOfECSymbols; i++)
+    for (uint32_t i = 0; i < numOfECSymbols; i++)
     {
-        //factor[1] = m_GaloisField->GetExponentialTable()->at(i);
-        //m_GeneratorPolynomial->Multiply(&factor);
-        
-        factor[1] = m_GaloisField->Pow(2, i);
+        //factor[1] = m_GaloisField->Pow(2, i);
+        factor[1] = m_GaloisField->GetExponentialTable()[i];
         m_GeneratorPolynomial->Multiply(&factor);
     }
 }
@@ -52,9 +50,12 @@ std::vector<RSWord> ReedSolomon::Encode(const std::vector<RSWord>& message) cons
     messagePolynomial.Enlarge(m_NumOfErrorCorrectingSymbols);
     messagePolynomial.Divide(m_GeneratorPolynomial, nullptr, &remainder);
     
-    std::vector<RSWord> result = message;
-    result.insert(result.end(), remainder.GetCoefficients()->begin(), remainder.GetCoefficients()->end());
-        
+    std::vector<RSWord> result(messagePolynomial.GetNumberOfCoefficients());
+    std::copy(message.begin(), message.end(), result.begin());
+    
+    // Append remainder to result (remainder are the EC symbols)
+    std::copy(remainder.GetCoefficients()->begin(), remainder.GetCoefficients()->end(), result.begin() + message.size());
+    
     return result;
 }
 
@@ -63,7 +64,7 @@ Polynomial ReedSolomon::CalculateSyndromes(const Polynomial& message) const
     std::vector<RSWord> tmp(m_NumOfErrorCorrectingSymbols + 1);
     tmp[m_NumOfErrorCorrectingSymbols] = 0; // Padding
     
-    for(uint8_t i = 0; i < m_NumOfErrorCorrectingSymbols; i++)
+    for(uint32_t i = 0; i < m_NumOfErrorCorrectingSymbols; i++)
     {
         tmp[m_NumOfErrorCorrectingSymbols - i - 1] = message.Evaluate(m_GaloisField->GetExponentialTable()[i]);
         

@@ -129,7 +129,7 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
 RSWord Polynomial::Evaluate(const RSWord x) const
 {
     RSWord result = m_Coefficients[0];
-    for(uint32_t i = 0; i < m_NumOfCoefficients; i++)
+    for(uint32_t i = 1; i < m_NumOfCoefficients; i++)
         result = m_GaloisField->Multiply(result, x) ^ m_Coefficients[i];
     
     return result;

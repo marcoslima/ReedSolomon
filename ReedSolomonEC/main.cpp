@@ -26,7 +26,7 @@ int main()
 
     // Create Reed-Solomon object and encode message
     ReedSolomon rs(bits, numOfErrorCorrectionSymbols);
-    const std::vector<RSWord> encoded = rs.Encode(message);
+    std::vector<RSWord> encoded = rs.Encode(message);
     
     // Print message
     std::cout << "----------------------------------------------" << std::endl;
@@ -41,6 +41,9 @@ int main()
     for(auto i : encoded)
         std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << " ";
     std::cout << std::endl << std::endl;
+    
+    // Corrupt message
+    //encoded[2] = 0;
     
     // Check for corruption
     std::cout << "----------------------------------------------" << std::endl;
