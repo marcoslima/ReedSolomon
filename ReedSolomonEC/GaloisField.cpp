@@ -54,10 +54,10 @@ void GaloisField::PrecomputeTables()
     
     // Debug print
     /*for(uint32_t i = 0; i < (m_Cardinality - 1) * 2; i++)
-        std::cout << "2^" << i << " = " << (int)m_ExponentialTable[i] << std::endl;
+        std::cout << "2^" << i << " = " << static_cast<int>(m_ExponentialTable[i]) << std::endl;
     
     for(uint32_t i = 0; i < m_Cardinality; i++)
-        std::cout << "log " << i << " = " << (int)m_LogarithmicTable[i] << std::endl;*/
+        std::cout << "log " << i << " = " << static_cast<int>(m_LogarithmicTable[i]) << std::endl;*/
 }
 
 RSWord GaloisField::Add(const RSWord x, const RSWord y) const noexcept

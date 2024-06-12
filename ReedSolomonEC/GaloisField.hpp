@@ -35,8 +35,8 @@ public:
     RSWord Pow(const RSWord x, const RSWord power) const;
     RSWord Inverse(const RSWord x) const;
     
-    const std::vector<RSWord>* const GetExponentialTable() const { return &m_ExponentialTable; }
-    const std::vector<RSWord>* const GetLogarithmicTable() const { return &m_LogarithmicTable; }
+    const std::vector<RSWord>& GetExponentialTable() const noexcept { return m_ExponentialTable; }
+    const std::vector<RSWord>& GetLogarithmicTable() const noexcept { return m_LogarithmicTable; }
 };
 };
 

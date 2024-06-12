@@ -12,7 +12,7 @@
 
 using namespace RS;
 
-ReedSolomon::ReedSolomon(const uint8_t exponent, const uint8_t numOfErrorCorrectingSymbols)
+ReedSolomon::ReedSolomon(const uint32_t exponent, const uint32_t numOfErrorCorrectingSymbols)
     : m_NumOfErrorCorrectingSymbols(numOfErrorCorrectingSymbols)
 {
     if(numOfErrorCorrectingSymbols < 1)
@@ -49,6 +49,7 @@ std::vector<RSWord> ReedSolomon::Encode(const std::vector<RSWord>& message) cons
     Polynomial messagePolynomial(message, m_GaloisField);
     Polynomial remainder(m_GaloisField);
     
+    messagePolynomial.Enlarge(m_NumOfErrorCorrectingSymbols);
     messagePolynomial.Divide(m_GeneratorPolynomial, nullptr, &remainder);
     
     std::vector<RSWord> result = message;
@@ -64,7 +65,7 @@ Polynomial ReedSolomon::CalculateSyndromes(const Polynomial& message) const
     
     for(uint8_t i = 0; i < m_NumOfErrorCorrectingSymbols; i++)
     {
-        tmp[m_NumOfErrorCorrectingSymbols - i - 1] = message.Evaluate((*m_GaloisField->GetExponentialTable())[i]);
+        tmp[m_NumOfErrorCorrectingSymbols - i - 1] = message.Evaluate(m_GaloisField->GetExponentialTable()[i]);
         
         //tmp[i] = message.Evaluate(m_GaloisField->Pow(2, i));
     }

@@ -19,25 +19,35 @@ int main()
 {
     std::cout << "Reed-Solomon error correction" << std::endl << std::endl;
     
+    const uint32_t bits = 8;
+    const uint32_t numOfErrorCorrectionSymbols = 5;
     const std::vector<RSWord> message = Utils::StringToRSWordVector("Hello World!");
-    
-    const uint8_t numOfErrorCorrectionSymbols = 5;
-    ReedSolomon rs(8, numOfErrorCorrectionSymbols);
+    const uint64_t messageSize = message.size();
+
+    // Create Reed-Solomon object and encode message
+    ReedSolomon rs(bits, numOfErrorCorrectionSymbols);
     const std::vector<RSWord> encoded = rs.Encode(message);
     
-    std::cout << "Message: ";
+    // Print message
+    std::cout << "----------------------------------------------" << std::endl;
+    std::cout << "Message (n=" << messageSize << "):" << std::endl;
     for(auto i : message)
-        std::cout << "0x" << std::setfill('0') << std::setw(2) << std::hex << (int)i << " ";
-    
-    std::cout << std::endl;
-    
-    std::cout << "Encoded: ";
-    for(auto i : encoded)
-        std::cout << "0x" << std::setfill('0') << std::setw(2) << std::hex << (int)i << " ";
-    
+        std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << " ";
     std::cout << std::endl << std::endl;
     
-    std::cout << "Is corrupted: " << (rs.IsMessageCorrupted(encoded) ? "Yes" : "No") << std::endl;
+    // Print encoded message
+    std::cout << "----------------------------------------------" << std::endl;
+    std::cout << "Encoded (n=" << std::dec << encoded.size() << "):" << std::endl;
+    for(auto i : encoded)
+        std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << " ";
+    std::cout << std::endl << std::endl;
+    
+    // Check for corruption
+    std::cout << "----------------------------------------------" << std::endl;
+    const bool isCorrupted = rs.IsMessageCorrupted(encoded);
+    std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl;
+    
+    std::cout << std::endl << std::endl;
     
     return 0;
 }

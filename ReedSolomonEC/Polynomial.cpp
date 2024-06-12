@@ -5,6 +5,8 @@
 //  Created by Marc Schöndorf on 11.06.24.
 //
 
+#include <iostream>
+#include <iomanip>
 #include <cstdint>
 #include <vector>
 
@@ -27,11 +29,11 @@ Polynomial::Polynomial(const std::vector<RSWord>& coefficients, const GaloisFiel
         throw std::invalid_argument("GaloisField cannot be nullptr.");
     
     m_Coefficients = coefficients;
-    m_NumOfCoefficients = static_cast<uint16_t>(m_Coefficients.size());
+    m_NumOfCoefficients = static_cast<uint32_t>(m_Coefficients.size());
     m_GaloisField = galoisField;
 }
 
-Polynomial::Polynomial(const RSWord* const coefficients, const uint16_t& numOfCoefficients, const GaloisField* const galoisField)
+Polynomial::Polynomial(const RSWord* const coefficients, const uint32_t numOfCoefficients, const GaloisField* const galoisField)
 {
     if(!galoisField)
         throw std::invalid_argument("GaloisField cannot be nullptr.");
@@ -51,13 +53,13 @@ Polynomial::Polynomial(const RSWord* const coefficients, const uint16_t& numOfCo
 
 void Polynomial::Add(const Polynomial* const polynomial)
 {
-    const uint16_t numCoefficients = std::max(m_NumOfCoefficients, polynomial->m_NumOfCoefficients);
+    const uint32_t numCoefficients = std::max(m_NumOfCoefficients, polynomial->m_NumOfCoefficients);
     std::vector<RSWord> coefficients(numCoefficients, 0);
     
-    for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
+    for(uint32_t i = 0; i < m_NumOfCoefficients; i++)
         coefficients[i + numCoefficients - m_NumOfCoefficients] = m_Coefficients[i];
     
-    for(uint16_t i = 0; i < polynomial->m_NumOfCoefficients; i++)
+    for(uint32_t i = 0; i < polynomial->m_NumOfCoefficients; i++)
         coefficients[i + numCoefficients - polynomial->m_NumOfCoefficients] ^= m_Coefficients[i];
     
     m_NumOfCoefficients = numCoefficients;
@@ -66,18 +68,18 @@ void Polynomial::Add(const Polynomial* const polynomial)
 
 void Polynomial::Scale(const RSWord scalar)
 {
-    for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
+    for(uint32_t i = 0; i < m_NumOfCoefficients; i++)
         m_Coefficients[i] = m_GaloisField->Multiply(m_Coefficients[i], scalar);
 }
 
 void Polynomial::Multiply(const Polynomial* const polynomial)
 {
-    const uint16_t numCoefficients = m_NumOfCoefficients + polynomial->m_NumOfCoefficients - 1;
+    const uint32_t numCoefficients = m_NumOfCoefficients + polynomial->m_NumOfCoefficients - 1;
     std::vector<RSWord> coefficients(numCoefficients, 0);
     
-    for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
+    for(uint32_t i = 0; i < m_NumOfCoefficients; i++)
     {
-        for(uint16_t j = 0; j < polynomial->m_NumOfCoefficients; j++)
+        for(uint32_t j = 0; j < polynomial->m_NumOfCoefficients; j++)
             coefficients[i + j] ^= m_GaloisField->Multiply(m_Coefficients[i], polynomial->m_Coefficients[j]);
     }
     
@@ -92,9 +94,9 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
     std::vector<RSWord> tmp = m_Coefficients;
     const RSWord normalizer = divisor->m_Coefficients[0];
     
-    const uint16_t upperLimit = m_NumOfCoefficients - divisor->m_NumOfCoefficients + 1;
+    const uint32_t upperLimit = m_NumOfCoefficients - divisor->m_NumOfCoefficients + 1;
     
-    for(uint16_t i = 0; i < upperLimit; i++)
+    for(uint32_t i = 0; i < upperLimit; i++)
     {
         tmp[i] = m_GaloisField->Divide(tmp[i], normalizer); // Needed for non monic polynomials
         const RSWord coefficient = tmp[i];
@@ -103,7 +105,7 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
         if(coefficient == 0)
             continue;
         
-        for(uint16_t j = 1; j < divisor->m_NumOfCoefficients; j++)
+        for(uint32_t j = 1; j < divisor->m_NumOfCoefficients; j++)
         {
             if(divisor->m_Coefficients[j] != 0) // Skip log(0)
                 tmp[i + j] ^= m_GaloisField->Multiply(divisor->m_Coefficients[j], coefficient);
@@ -113,7 +115,7 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
     // Save result
     m_Coefficients = tmp;
     
-    const uint16_t separator = m_NumOfCoefficients - divisor->m_NumOfCoefficients + 1;
+    const uint32_t separator = m_NumOfCoefficients - divisor->m_NumOfCoefficients + 1;
     
     // Extract quotient
     if(quotient)
@@ -127,24 +129,31 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
 RSWord Polynomial::Evaluate(const RSWord x) const
 {
     RSWord result = m_Coefficients[0];
-    for(uint16_t i = 0; i < m_NumOfCoefficients; i++)
+    for(uint32_t i = 0; i < m_NumOfCoefficients; i++)
         result = m_GaloisField->Multiply(result, x) ^ m_Coefficients[i];
     
     return result;
 }
 
+void Polynomial::Enlarge(const uint32_t add, const RSWord value)
+{
+    if(add < 1)
+        throw std::invalid_argument("Enlargement must be greater than zero.");
+    
+    m_NumOfCoefficients += add;
+    m_Coefficients.resize(m_NumOfCoefficients, value);
+}
+
 void Polynomial::SetNew(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField)
 {
-    //m_Coefficients.clear();
-    
     m_Coefficients = coefficients;
-    m_NumOfCoefficients = static_cast<uint16_t>(m_Coefficients.size());
+    m_NumOfCoefficients = static_cast<uint32_t>(m_Coefficients.size());
     
     if(galoisField)
         m_GaloisField = galoisField;
 }
 
-void Polynomial::SetNew(const RSWord* const coefficients, const uint16_t& numOfCoefficients, const GaloisField* const galoisField)
+void Polynomial::SetNew(const RSWord* const coefficients, const uint32_t numOfCoefficients, const GaloisField* const galoisField)
 {
     if(!coefficients)
         throw std::invalid_argument("Coefficients cannot be nullptr.");
@@ -160,4 +169,24 @@ void Polynomial::SetNew(const RSWord* const coefficients, const uint16_t& numOfC
     
     if(galoisField)
         m_GaloisField = galoisField;
+}
+
+void Polynomial::Print() const
+{
+    auto printSeparated = [printComma = false](const RSWord& word) mutable
+    {
+        if(printComma)
+            std::cout << ", ";
+        
+        std::cout << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(word);
+        
+        printComma = true;
+    };
+    
+    std::cout << "Polynomial (n=" << m_NumOfCoefficients << "): [";
+    
+    for(RSWord i : m_Coefficients)
+        printSeparated(i);
+    
+    std::cout << "]" << std::endl << std::endl;
 }

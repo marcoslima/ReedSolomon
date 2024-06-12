@@ -15,7 +15,7 @@ class ReedSolomon
 private:
     const GaloisField*      m_GaloisField = nullptr;
     
-    const uint8_t           m_NumOfErrorCorrectingSymbols = 0;
+    const uint32_t          m_NumOfErrorCorrectingSymbols = 0;
     Polynomial*             m_GeneratorPolynomial = nullptr;
     
     void        CreateGeneratorPolynomial(const uint8_t numOfECSymbols);
@@ -23,7 +23,7 @@ private:
     bool        CheckSyndromes(const Polynomial& syndromes) const;
     
 public:
-    ReedSolomon(const uint8_t exponent, const uint8_t numOfErrorCorrectingSymbols);
+    ReedSolomon(const uint32_t exponent, const uint32_t numOfErrorCorrectingSymbols);
     ~ReedSolomon();
     
     std::vector<RSWord> Encode(const std::vector<RSWord>& message) const;
