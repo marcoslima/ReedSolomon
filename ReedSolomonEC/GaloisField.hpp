@@ -13,7 +13,7 @@ namespace RS
 class GaloisField
 {
 private:
-    const uint16_t          m_PrimitivePolynomial;
+    const uint32_t          m_PrimitivePolynomial;
     
     const uint8_t           m_Characteristic = 2;
     const uint8_t           m_Exponent = 0;

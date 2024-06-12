@@ -14,7 +14,7 @@
 using namespace RS;
 
 GaloisField::GaloisField(const uint8_t exponent)
-    : m_PrimitivePolynomial(285)
+    : m_PrimitivePolynomial(0x11d)
     , m_Exponent(exponent)
     , m_Cardinality(std::pow(m_Characteristic, m_Exponent))
 {
@@ -28,7 +28,7 @@ GaloisField::GaloisField(const uint8_t exponent)
 
 void GaloisField::PrecomputeTables()
 {
-    m_ExponentialTable.resize(m_Cardinality * 2);
+    m_ExponentialTable.resize((m_Cardinality - 1) * 2);
     m_LogarithmicTable.resize(m_Cardinality);
     
     m_ExponentialTable[0] = 1;
@@ -37,7 +37,7 @@ void GaloisField::PrecomputeTables()
     
     // Precompute
     uint32_t x = 1;
-    for(uint16_t i = 1; i < m_Cardinality; i++)
+    for(uint32_t i = 1; i < m_Cardinality - 1; i++)
     {
         x *= 2;
         
@@ -49,7 +49,7 @@ void GaloisField::PrecomputeTables()
     }
     
     // Extend exponential table to double the size for optimization (don't need modulo later)
-    for(uint16_t i = m_Cardinality - 1; i < (m_Cardinality * 2); i++)
+    for(uint32_t i = m_Cardinality - 1; i < (m_Cardinality - 1) * 2; i++)
         m_ExponentialTable[i] = m_ExponentialTable[i - m_Cardinality - 1];
     
     // Debug print
@@ -107,8 +107,8 @@ RSWord GaloisField::Divide(const RSWord x, const RSWord y) const
     if(x == 0)
         return 0;
         
-    const uint16_t index = (m_LogarithmicTable[x] + (m_Cardinality - 1) - m_LogarithmicTable[y]) % (m_Cardinality - 1);
-    //const uint16_t index = (m_LogarithmicTable[x] - m_LogarithmicTable[y] + m_Cardinality - 1);
+    //const uint16_t index = (m_LogarithmicTable[x] + (m_Cardinality - 1) - m_LogarithmicTable[y]) % (m_Cardinality - 1);
+    const uint16_t index = (m_LogarithmicTable[x] - m_LogarithmicTable[y] + m_Cardinality - 1);
     
     return m_ExponentialTable[index];
 }
