@@ -86,6 +86,16 @@ void Polynomial::Multiply(const Polynomial* const polynomial)
     m_Coefficients = coefficients;
 }
 
+Polynomial Polynomial::operator* (RSWord scalar) const
+{
+    Polynomial result = *this;
+    
+    for(uint32_t i = 0; i < m_NumOfCoefficients; i++)
+        result[i] = m_GaloisField->Multiply(result[i], scalar);
+    
+    return result;
+}
+
 // Extended synthetic division
 // Function expects polynomials sorted from biggest to lowest degree
 void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quotient, Polynomial* const remainder)
@@ -125,11 +135,39 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
         remainder->SetNew(tmp.data() + separator, divisor->m_NumOfCoefficients - 1);
 }
 
+void Polynomial::Reverse()
+{
+    std::reverse(m_Coefficients.begin(), m_Coefficients.end());
+}
+
 RSWord Polynomial::Evaluate(const RSWord x) const
 {
     RSWord result = m_Coefficients[0];
     for(uint32_t i = 1; i < m_NumOfCoefficients; i++)
         result = m_GaloisField->Multiply(result, x) ^ m_Coefficients[i];
+    
+    return result;
+}
+
+std::vector<uint32_t> Polynomial::ChienSearch(const uint32_t max) const
+{
+    std::vector<uint32_t> result;
+    Polynomial tmp = *this;
+    
+    for(uint32_t i = 0; i < max; i++)
+    {
+        RSWord sum = 0;
+        for(uint32_t j = 0; j < m_NumOfCoefficients; j++)
+        {
+            sum ^= tmp[j];
+            
+            const uint32_t index = m_NumOfCoefficients - j - 1;
+            tmp[j] = m_GaloisField->Multiply(tmp[j], m_GaloisField->GetExponentialTable()[index]);
+        }
+        
+        if(sum == 0)
+            result.push_back(i);
+    }
     
     return result;
 }
@@ -144,7 +182,7 @@ void Polynomial::Enlarge(const uint32_t add, const RSWord value)
 }
 
 // Cut n elements from the right
-void Polynomial::TrimRight(const uint32_t n)
+void Polynomial::TrimEnd(const uint32_t n)
 {
     if(n > m_NumOfCoefficients)
         throw std::invalid_argument("Cannot erase more elements than the size of the polynomial.");
@@ -154,7 +192,7 @@ void Polynomial::TrimRight(const uint32_t n)
 }
 
 // Cut n elements from the left
-void Polynomial::TrimLeft(const uint32_t n)
+void Polynomial::TrimBeginning(const uint32_t n)
 {
     if(n > m_NumOfCoefficients)
         throw std::invalid_argument("Cannot erase more elements than the size of the polynomial.");

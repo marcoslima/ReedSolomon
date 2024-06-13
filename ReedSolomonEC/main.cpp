@@ -50,6 +50,7 @@ int main()
     // Corrupt message
     encoded[0] = 0;
     encoded[1] = 0;
+    //encoded[1] = 0;
     
     // ************************************************
     // Print corrupted message
@@ -67,10 +68,20 @@ int main()
     std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl << std::endl;
     
     // ************************************************
-    // Fix erasure
+    // Fix test
     const Polynomial msgPoly(encoded, rs.m_GaloisField);
     const Polynomial syndromes = rs.CalculateSyndromes(msgPoly);
+    
+    // Erasure
+    const Polynomial erasureLocatorPolynomial = rs.CalculateErasureLocatorPolynomial({0, 1});
     const Polynomial corrected = rs.CorrectErasures(msgPoly, syndromes, {0, 1});
+    
+    // Error
+    const Polynomial errorLocatorPolynomial = rs.CalculateErrorLocatorPolynomial(syndromes, 5, nullptr, 0);
+    
+    //const std::vector<uint32_t> errorPositions = rs.FindErrors(&errorLocatorPolynomial, encoded.size());
+    
+    
     
     // ************************************************
     // Print fixed message
