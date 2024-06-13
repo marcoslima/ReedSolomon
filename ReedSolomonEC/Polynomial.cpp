@@ -38,15 +38,14 @@ Polynomial::Polynomial(const RSWord* const coefficients, const uint32_t numOfCoe
     if(!galoisField)
         throw std::invalid_argument("GaloisField cannot be nullptr.");
     
-    if(!coefficients)
-        throw std::invalid_argument("Coefficients cannot be nullptr.");
-    
     if(numOfCoefficients < 1)
         throw std::invalid_argument("Number of coefficients must be greater than zero.");
     
     m_NumOfCoefficients = numOfCoefficients;
     m_Coefficients.resize(m_NumOfCoefficients);
-    std::memcpy(m_Coefficients.data(), coefficients, sizeof(RSWord) * m_NumOfCoefficients);
+    
+    if(coefficients)
+        std::memcpy(m_Coefficients.data(), coefficients, sizeof(RSWord) * m_NumOfCoefficients);
     
     m_GaloisField = galoisField;
 }
@@ -60,7 +59,7 @@ void Polynomial::Add(const Polynomial* const polynomial)
         coefficients[i + numCoefficients - m_NumOfCoefficients] = m_Coefficients[i];
     
     for(uint32_t i = 0; i < polynomial->m_NumOfCoefficients; i++)
-        coefficients[i + numCoefficients - polynomial->m_NumOfCoefficients] ^= m_Coefficients[i];
+        coefficients[i + numCoefficients - polynomial->m_NumOfCoefficients] ^= polynomial->m_Coefficients[i];
     
     m_NumOfCoefficients = numCoefficients;
     m_Coefficients = coefficients;
@@ -144,13 +143,24 @@ void Polynomial::Enlarge(const uint32_t add, const RSWord value)
     m_Coefficients.resize(m_NumOfCoefficients, value);
 }
 
-void Polynomial::Shrink(const uint32_t subtract)
+// Cut n elements from the right
+void Polynomial::TrimRight(const uint32_t n)
 {
-    if(subtract > m_NumOfCoefficients)
-        throw std::invalid_argument("Cannot shrink more than the size of the polynomial.");
+    if(n > m_NumOfCoefficients)
+        throw std::invalid_argument("Cannot erase more elements than the size of the polynomial.");
     
-    m_NumOfCoefficients -= subtract;
+    m_NumOfCoefficients -= n;
     m_Coefficients.resize(m_NumOfCoefficients);
+}
+
+// Cut n elements from the left
+void Polynomial::TrimLeft(const uint32_t n)
+{
+    if(n > m_NumOfCoefficients)
+        throw std::invalid_argument("Cannot erase more elements than the size of the polynomial.");
+    
+    m_NumOfCoefficients -= n;
+    m_Coefficients.erase(m_Coefficients.begin(), m_Coefficients.begin() + n);
 }
 
 void Polynomial::SetNew(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField)
@@ -187,7 +197,7 @@ void Polynomial::Print() const
         if(printComma)
             std::cout << ", ";
         
-        std::cout << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(word);
+        std::cout << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(word) << std::dec;
         
         printComma = true;
     };

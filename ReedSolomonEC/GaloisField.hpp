@@ -37,6 +37,10 @@ public:
     
     const std::vector<RSWord>& GetExponentialTable() const noexcept { return m_ExponentialTable; }
     const std::vector<RSWord>& GetLogarithmicTable() const noexcept { return m_LogarithmicTable; }
+    
+    const uint32_t    GetCharacteristic() const { return m_Characteristic; }
+    const uint32_t    GetExponent() const { return m_Exponent; }
+    const uint32_t    GetCardinality() const { return m_Cardinality; }
 };
 };
 
