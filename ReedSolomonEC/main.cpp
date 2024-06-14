@@ -48,8 +48,8 @@ int main()
     
     // ************************************************
     // Corrupt message
-    encoded[0] = 0;
-    encoded[1] = 0;
+    encoded[0] = 99;
+    encoded[1] = 99;
     //encoded[1] = 0;
     
     // ************************************************
@@ -69,23 +69,27 @@ int main()
     
     // ************************************************
     // Fix test
-    const Polynomial msgPoly(encoded, rs.m_GaloisField);
-    const Polynomial syndromes = rs.CalculateSyndromes(msgPoly);
+    //const Polynomial msgPoly(encoded, rs.m_GaloisField);
+    //const Polynomial syndromes = rs.CalculateSyndromes(msgPoly);
     
     // Erasure
-    const Polynomial erasureLocatorPolynomial = rs.CalculateErasureLocatorPolynomial({0, 1});
-    const Polynomial corrected = rs.CorrectErasures(msgPoly, syndromes, {0, 1});
+    //const Polynomial erasureLocatorPolynomial = rs.CalculateErasureLocatorPolynomial({0, 1});
+    //const Polynomial corrected = rs.CorrectErasures(msgPoly, syndromes, {0, 1});
     
     // Error
-    const Polynomial errorLocatorPolynomial = rs.CalculateErrorLocatorPolynomial(syndromes, 5, nullptr, 0);
+    //const Polynomial errorLocatorPolynomial = rs.CalculateErrorLocatorPolynomial(syndromes, 5, nullptr, 0);
     
     //const std::vector<uint32_t> errorPositions = rs.FindErrors(&errorLocatorPolynomial, encoded.size());
     
+    //std::vector<RSWord> fixedMessage = *corrected.GetCoefficients();
     
+    // ************************************************
+    // Decode
+    std::vector<uint32_t> erasurePositions = {0, 1};
+    std::vector<RSWord> fixedMessage = rs.Decode(encoded, numOfErrorCorrectionSymbols, /*&erasurePositions*/nullptr);
     
     // ************************************************
     // Print fixed message
-    std::vector<RSWord> fixedMessage = *corrected.GetCoefficients();
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "Fixed (n=" << fixedMessage.size() << "):" << std::endl;
     for(auto i : fixedMessage)

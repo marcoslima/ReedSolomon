@@ -55,7 +55,7 @@ std::vector<RSWord> ReedSolomon::Encode(const std::vector<RSWord>& message) cons
     std::vector<RSWord> result(messagePolynomial.GetNumberOfCoefficients());
     std::copy(message.begin(), message.end(), result.begin());
     
-    // Append remainder to result (remainder are the EC symbols)
+    // Append remainder to result (remainder are the error correction symbols)
     std::copy(remainder.GetCoefficients()->begin(), remainder.GetCoefficients()->end(), result.begin() + message.size());
     
     return result;
@@ -76,14 +76,14 @@ Polynomial ReedSolomon::CalculateSyndromes(const Polynomial& message) const
     return Polynomial(tmp, m_GaloisField);
 }
 
-Polynomial ReedSolomon::CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint32_t>& erasurePositions, const uint32_t n) const
+Polynomial ReedSolomon::CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint32_t>* const erasurePositions, const uint32_t n) const
 {
     Polynomial forneySyndromes = syndromes;
     forneySyndromes.TrimEnd(1);
     
-    if(erasurePositions.size() > 0)
+    if(erasurePositions)
     {
-        for(uint32_t i : erasurePositions)
+        for(uint32_t i : *erasurePositions)
         {
             RSWord reverse = static_cast<RSWord>(n) - i - 1;
             RSWord x = m_GaloisField->GetExponentialTable()[reverse];
@@ -258,6 +258,7 @@ const std::vector<uint32_t> ReedSolomon::FindErrors(const Polynomial& errorLocat
     if(errorLocatorPolynomial.GetNumberOfCoefficients() == 1)
     {
         assert(0);
+        throw std::logic_error("LOGIC ERROR: Unimplemented");
     }
     else if(errorLocatorPolynomial.GetNumberOfCoefficients() == 2)
     {
@@ -275,7 +276,7 @@ const std::vector<uint32_t> ReedSolomon::FindErrors(const Polynomial& errorLocat
     for(uint32_t i = 0; i < result.size(); i++)
     {
         if(result[i] >= messageLength)
-            throw std::runtime_error("Unexpected error while finding errors in message.");
+            throw std::runtime_error("Unexpected error while searching errors in message.");
         
         result[i] = messageLength - result[i] - 1;
     }
@@ -324,7 +325,30 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const u
     const Polynomial syndromes = CalculateSyndromes(messagePolynomial);
     
     // Is message corrupted?
+    if(CheckSyndromes(syndromes))
+    {
+        // Repair
+        const Polynomial forneySyndromes = CalculateForneySyndromes(syndromes, erasurePositions, static_cast<uint32_t>(data.size()));
+        const Polynomial errorLocator = CalculateErrorLocatorPolynomial(forneySyndromes, numOfErrorCorrectingSymbols, nullptr, erasurePositions ? static_cast<uint32_t>(erasurePositions->size()) : 0);
+        
+        std::vector<uint32_t> errorPositions = FindErrors(errorLocator, static_cast<uint32_t>(data.size()));
+        
+        if(errorPositions.size() == 0 && (!erasurePositions || erasurePositions->size() == 0))
+            throw std::runtime_error("Unable to locate errors.");
+        
+        // Append erasure positions to error positions vector
+        if(erasurePositions)
+        {
+            errorPositions.insert(errorPositions.begin(), erasurePositions->begin(), erasurePositions->end());
+        }
+        
+        // Correct errors
+        messagePolynomial = CorrectErasures(messagePolynomial, syndromes, errorPositions);
+    }
     
-    std::vector<RSWord> result;
+    // Cut error correcting symbols from message and return message
+    std::vector<RSWord> result(data.size() - numOfErrorCorrectingSymbols);
+    std::copy(messagePolynomial.GetCoefficients()->begin(), messagePolynomial.GetCoefficients()->end() - numOfErrorCorrectingSymbols, result.begin());
+    
     return result;
 }

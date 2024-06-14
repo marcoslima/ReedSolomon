@@ -12,7 +12,7 @@ namespace RS
 {
 class ReedSolomon
 {
-public:
+private:
     const uint32_t          m_NumOfErrorCorrectingSymbols = 0;
     
     const GaloisField*      m_GaloisField = nullptr;
@@ -22,7 +22,7 @@ public:
     void        CreateGeneratorPolynomial(const uint32_t numOfECSymbols);
     
     Polynomial  CalculateSyndromes(const Polynomial& message) const;
-    Polynomial  CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint32_t>& erasurePositions, const uint32_t n) const;
+    Polynomial  CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint32_t>* const erasurePositions, const uint32_t n) const;
     bool        CheckSyndromes(const Polynomial& syndromes) const;
     
     // Erasure
