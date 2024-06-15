@@ -188,7 +188,7 @@ Polynomial ReedSolomon::CorrectErasures(const Polynomial& message, const Polynom
     return result;
 }
 
-Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const uint32_t n, const Polynomial* const erasureLocatorPolynomial, const uint32_t erasureCount) const
+Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const int32_t n, const Polynomial* const erasureLocatorPolynomial, const int32_t erasureCount) const
 {
     Polynomial errorLocations({1}, m_GaloisField);
     Polynomial oldLocations({1}, m_GaloisField);
@@ -202,8 +202,8 @@ Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndro
     
     int32_t syndromeShift = 0;
     
-    if(syndromes.GetNumberOfCoefficients() > n)
-        syndromeShift = syndromes.GetNumberOfCoefficients() - n;
+    //if(syndromes.GetNumberOfCoefficients() > n)
+    //    syndromeShift = syndromes.GetNumberOfCoefficients() - n;
             
     for(int32_t i = n - erasureCount - 1; i >= 0; i--)
     {
@@ -240,7 +240,7 @@ Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndro
     
     errorLocations.TrimBeginning(leadingZeros);
     
-    const uint32_t numErrors = errorLocations.GetNumberOfCoefficients() - 1;
+    const int32_t numErrors = errorLocations.GetNumberOfCoefficients() - 1;
     if(numErrors * 2 - erasureCount > n)
         throw std::runtime_error("Too many errors to correct.");
     
@@ -257,8 +257,8 @@ const std::vector<uint32_t> ReedSolomon::FindErrors(const Polynomial& errorLocat
     
     if(errorLocatorPolynomial.GetNumberOfCoefficients() == 1)
     {
-        assert(0);
-        throw std::logic_error("LOGIC ERROR: Unimplemented");
+        //assert(0);
+        //throw std::logic_error("LOGIC ERROR: Unimplemented");
     }
     else if(errorLocatorPolynomial.GetNumberOfCoefficients() == 2)
     {
@@ -325,11 +325,11 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const u
     const Polynomial syndromes = CalculateSyndromes(messagePolynomial);
     
     // Is message corrupted?
-    if(CheckSyndromes(syndromes))
+    if(!CheckSyndromes(syndromes))
     {
         // Repair
         const Polynomial forneySyndromes = CalculateForneySyndromes(syndromes, erasurePositions, static_cast<uint32_t>(data.size()));
-        const Polynomial errorLocator = CalculateErrorLocatorPolynomial(forneySyndromes, numOfErrorCorrectingSymbols, nullptr, erasurePositions ? static_cast<uint32_t>(erasurePositions->size()) : 0);
+        const Polynomial errorLocator = CalculateErrorLocatorPolynomial(forneySyndromes, numOfErrorCorrectingSymbols, nullptr, erasurePositions ? static_cast<int32_t>(erasurePositions->size()) : 0);
         
         std::vector<uint32_t> errorPositions = FindErrors(errorLocator, static_cast<uint32_t>(data.size()));
         

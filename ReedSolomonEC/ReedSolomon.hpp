@@ -31,7 +31,7 @@ private:
     Polynomial  CorrectErasures(const Polynomial& message, const Polynomial& syndromes, const std::vector<uint32_t>& erasurePositions) const;
     
     // Error
-    Polynomial  CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const uint32_t n, const Polynomial* const erasureLocatorPolynomial, const uint32_t erasureCount) const;
+    Polynomial  CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const int32_t n, const Polynomial* const erasureLocatorPolynomial, const int32_t erasureCount) const;
     const std::vector<uint32_t> FindErrors(const Polynomial& errorLocatorPolynomial, const uint32_t messageLength) const;
     
 public:

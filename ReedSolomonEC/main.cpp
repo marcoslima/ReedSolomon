@@ -21,6 +21,7 @@ int main()
     
     const uint32_t bits = 8;
     const uint32_t numOfErrorCorrectionSymbols = 5;
+    
     const std::vector<RSWord> message = Utils::StringToRSWordVector("Hello World!");
     const uint64_t messageSize = message.size();
 
@@ -48,9 +49,10 @@ int main()
     
     // ************************************************
     // Corrupt message
-    encoded[0] = 99;
-    encoded[1] = 99;
-    //encoded[1] = 0;
+    encoded[0] = 0x99;
+    encoded[1] = 0x99;
+    encoded[2] = 0x55;
+    //encoded[3] = 0x67;
     
     // ************************************************
     // Print corrupted message
@@ -63,9 +65,9 @@ int main()
     
     // ************************************************
     // Check for corruption
-    std::cout << "----------------------------------------------" << std::endl;
+    /*std::cout << "----------------------------------------------" << std::endl;
     const bool isCorrupted = rs.IsMessageCorrupted(encoded);
-    std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl << std::endl;
+    std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl << std::endl;*/
     
     // ************************************************
     // Fix test
@@ -85,8 +87,16 @@ int main()
     
     // ************************************************
     // Decode
-    std::vector<uint32_t> erasurePositions = {0, 1};
-    std::vector<RSWord> fixedMessage = rs.Decode(encoded, numOfErrorCorrectionSymbols, /*&erasurePositions*/nullptr);
+    std::vector<uint32_t> erasurePositions = {0, 1, 2};
+    std::vector<RSWord> fixedMessage;
+    
+    try {
+        fixedMessage = rs.Decode(encoded, numOfErrorCorrectionSymbols, &erasurePositions/*nullptr*/);
+    }
+    catch(const std::runtime_error& e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        return 1;
+    }
     
     // ************************************************
     // Print fixed message
@@ -95,8 +105,6 @@ int main()
     for(auto i : fixedMessage)
         std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << std::dec << " ";
     std::cout << std::endl << std::endl;
-    
-    std::cout << std::endl << std::endl;
-    
+        
     return 0;
 }
