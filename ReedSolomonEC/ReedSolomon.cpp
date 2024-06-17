@@ -284,7 +284,7 @@ const std::vector<uint64_t> ReedSolomon::FindErrors(const Polynomial& errorLocat
     return result;
 }
 
-std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions) const
+std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions, uint64_t* const numOfErrorsFound, uint64_t* const numOfErrorsAndErasuresFound) const
 {
     if(data.size() == 0)
         throw std::invalid_argument("Data to be decoded cannot have length zero.");
@@ -312,6 +312,7 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
         const Polynomial errorLocator = CalculateErrorLocatorPolynomial(forneySyndromes, m_NumOfErrorCorrectingSymbols, nullptr, erasurePositions ? erasurePositions->size() : 0);
         
         std::vector<uint64_t> errorPositions = FindErrors(errorLocator, data.size());
+        *numOfErrorsFound = errorPositions.size();
         
         if(errorPositions.size() == 0 && (!erasurePositions || erasurePositions->size() == 0))
             throw std::runtime_error("Unable to locate errors.");
@@ -321,6 +322,8 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
         {
             errorPositions.insert(errorPositions.begin(), erasurePositions->begin(), erasurePositions->end());
         }
+        
+        *numOfErrorsAndErasuresFound = errorPositions.size();
         
         // Correct errors
         messagePolynomial = CorrectErasures(messagePolynomial, syndromes, errorPositions);

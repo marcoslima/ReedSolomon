@@ -64,10 +64,12 @@ int main()
     // Decode
     std::vector<uint64_t> erasurePositions = {11};
     std::vector<RSWord> fixedMessage;
+    uint64_t numOfErrorsFound = 0;
+    uint64_t numOfErrorsAndErasures = 0;
     
     try {
-        fixedMessage = RS.Decode(encoded, &erasurePositions); // With known erasure positions
-        //fixedMessage = RS.Decode(encoded, nullptr); // Unknown error positions
+        fixedMessage = RS.Decode(encoded, &erasurePositions, &numOfErrorsFound, &numOfErrorsAndErasures); // With known erasure positions
+        //fixedMessage = RS.Decode(encoded, nullptr, &numOfErrorsFound, &numOfErrorsAndErasures); // Unknown error positions
     }
     catch(const std::runtime_error& e) {
         std::cout << "ERROR: " << e.what() << std::endl;
@@ -77,6 +79,8 @@ int main()
     // ************************************************
     // Print fixed message
     std::cout << "----------------------------------------------" << std::endl;
+    std::cout << "Decoding found " << numOfErrorsFound << " errors." << std::endl;
+    std::cout << "In total " << numOfErrorsAndErasures << " errors and erasures." << std::endl << std::endl;
     Utils::PrintVector(fixedMessage, "Fixed", true, true);
     Utils::PrintVectorAsASCIICharacters(fixedMessage, "ASCII", false);
     std::cout << std::endl << std::endl;

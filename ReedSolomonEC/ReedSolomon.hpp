@@ -39,7 +39,7 @@ public:
     ~ReedSolomon();
     
     std::vector<RSWord> Encode(const std::vector<RSWord>& message) const;
-    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions = nullptr) const;
+    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions = nullptr, uint64_t* const numOfErrorsFound = nullptr, uint64_t* const numOfErrorsAndErasuresFound = nullptr) const;
     
     bool IsMessageCorrupted(const std::vector<RSWord>& message);
 };
