@@ -12,7 +12,7 @@ namespace RS
 {
 class ReedSolomon
 {
-private:
+public:
     const uint32_t          m_NumOfErrorCorrectingSymbols = 0;
     
     const GaloisField*      m_GaloisField = nullptr;
@@ -28,11 +28,11 @@ private:
     // Erasure
     Polynomial  CalculateErasureLocatorPolynomial(const std::vector<uint32_t>& erasurePositions) const;
     Polynomial  CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial, const uint32_t n) const;
-    Polynomial  CorrectErasures(const Polynomial& message, const Polynomial& syndromes, const std::vector<uint32_t>& erasurePositions) const;
+    Polynomial  CorrectErasures(const Polynomial& message, const Polynomial& syndromes, const std::vector<uint64_t>& erasurePositions) const;
     
     // Error
     Polynomial  CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const int32_t n, const Polynomial* const erasureLocatorPolynomial, const int32_t erasureCount) const;
-    const std::vector<uint32_t> FindErrors(const Polynomial& errorLocatorPolynomial, const uint32_t messageLength) const;
+    const std::vector<uint64_t> FindErrors(const Polynomial& errorLocatorPolynomial, const uint32_t messageLength) const;
     
 public:
     ReedSolomon(const uint32_t exponent, const uint32_t numOfErrorCorrectingSymbols);
