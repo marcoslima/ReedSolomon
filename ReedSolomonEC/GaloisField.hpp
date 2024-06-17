@@ -13,11 +13,11 @@ namespace RS
 class GaloisField
 {
 private:
-    const uint32_t          m_PrimitivePolynomial;
+    const uint64_t          m_PrimitivePolynomial;
     
-    const uint32_t          m_Characteristic = 2;
-    const uint32_t          m_Exponent = 0;
-    const uint32_t          m_Cardinality = 0;
+    const uint64_t          m_Characteristic = 2;
+    const uint64_t          m_Exponent = 0;
+    const uint64_t          m_Cardinality = 0;
     
     std::vector<RSWord>     m_ExponentialTable;
     std::vector<RSWord>     m_LogarithmicTable;
@@ -25,11 +25,10 @@ private:
     void PrecomputeTables();
     
 public:
-    GaloisField(const uint32_t exponent);
+    GaloisField(const uint64_t exponent);
     
     RSWord Add(const RSWord x, const RSWord y) const noexcept;
     RSWord Subtract(const RSWord x, const RSWord y) const noexcept;
-    //RSWord MultiplyWithoutLookupTable(RSWord x, RSWord y) const;
     RSWord Multiply(const RSWord x, const RSWord y) const;
     RSWord Divide(const RSWord x, const RSWord y) const;
     RSWord Pow(const RSWord x, const RSWord power) const;
@@ -38,9 +37,9 @@ public:
     const std::vector<RSWord>& GetExponentialTable() const noexcept { return m_ExponentialTable; }
     const std::vector<RSWord>& GetLogarithmicTable() const noexcept { return m_LogarithmicTable; }
     
-    const uint32_t    GetCharacteristic() const { return m_Characteristic; }
-    const uint32_t    GetExponent() const { return m_Exponent; }
-    const uint32_t    GetCardinality() const { return m_Cardinality; }
+    const uint64_t    GetCharacteristic() const { return m_Characteristic; }
+    const uint64_t    GetExponent() const { return m_Exponent; }
+    const uint64_t    GetCardinality() const { return m_Cardinality; }
 };
 };
 

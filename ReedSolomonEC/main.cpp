@@ -19,57 +19,39 @@ int main()
 {
     std::cout << "Reed-Solomon error correction" << std::endl << std::endl;
     
-    const uint32_t bitsPerWord = 8;
-    const uint32_t numOfErrorCorrectionSymbols = 5;
-    
+    const uint64_t bitsPerWord = 8;
+    const uint64_t numOfErrorCorrectionSymbols = 5;
     const std::vector<RSWord> message = Utils::StringToRSWordVector("Hello World!");
-    const uint64_t messageSize = message.size();
 
     // Create Reed-Solomon object and encode message
     const ReedSolomon RS(bitsPerWord, numOfErrorCorrectionSymbols);
     std::vector<RSWord> encoded = RS.Encode(message);
     
-    Utils::PrintVector(message, "Message", true, false);
-    Utils::PrintVectorAsASCIICharacters(message, "Message ASCII", true);
-    
-    Polynomial p(message, RS.m_GaloisField);
-    p.Print("Poly", false);
-    p.PrintAsASCIICharacters("PolyASCII", false);
-    
-    return 0;
-    
     // ************************************************
     // Print message
     std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "Message (n=" << messageSize << "):" << std::endl;
-    for(auto i : message)
-        std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << std::dec << " ";
-    
+    Utils::PrintVector(message, "Message", true, true);
+    Utils::PrintVectorAsASCIICharacters(message, "ASCII", false);
     std::cout << std::endl << std::endl;
     
     // ************************************************
     // Print encoded message
     std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "Encoded (n=" << std::dec << encoded.size() << "):" << std::endl;
-    for(auto i : encoded)
-        std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << std::dec << " ";
-    
+    Utils::PrintVector(encoded, "Encoded", true, true);
     std::cout << std::endl << std::endl;
     
     // ************************************************
     // Corrupt message
-    encoded[11] = 0xFF;
-    //encoded[1] = 0x99;
-    //encoded[2] = 0x55;
+    encoded[0] = 0xFF;
+    encoded[1] = 0xFF;
     //encoded[3] = 0x67;
+    encoded[11] = 0x00;
     
     // ************************************************
     // Print corrupted message
     std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "Corrupted (n=" << std::dec << encoded.size() << "):" << std::endl;
-    for(auto i : encoded)
-        std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << std::dec << " ";
-    
+    Utils::PrintVector(encoded, "Corrupted", true, true);
+    Utils::PrintVectorAsASCIICharacters(encoded, "ASCII", false);
     std::cout << std::endl << std::endl;
     
     // ************************************************
@@ -79,29 +61,13 @@ int main()
     std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl << std::endl;*/
     
     // ************************************************
-    // Fix test
-    //const Polynomial msgPoly(encoded, rs.m_GaloisField);
-    //const Polynomial syndromes = rs.CalculateSyndromes(msgPoly);
-    
-    // Erasure
-    //const Polynomial erasureLocatorPolynomial = rs.CalculateErasureLocatorPolynomial({0, 1});
-    //const Polynomial corrected = rs.CorrectErasures(msgPoly, syndromes, {0, 1});
-    
-    // Error
-    //const Polynomial errorLocatorPolynomial = rs.CalculateErrorLocatorPolynomial(syndromes, 5, nullptr, 0);
-    
-    //const std::vector<uint32_t> errorPositions = rs.FindErrors(&errorLocatorPolynomial, encoded.size());
-    
-    //std::vector<RSWord> fixedMessage = *corrected.GetCoefficients();
-    
-    // ************************************************
     // Decode
-    std::vector<uint32_t> erasurePositions = {0, 1, 2};
+    std::vector<uint64_t> erasurePositions = {11};
     std::vector<RSWord> fixedMessage;
     
     try {
-        //fixedMessage = RS.Decode(encoded, numOfErrorCorrectionSymbols, &erasurePositions);
-        fixedMessage = RS.Decode(encoded, numOfErrorCorrectionSymbols, nullptr);
+        fixedMessage = RS.Decode(encoded, &erasurePositions); // With known erasure positions
+        //fixedMessage = RS.Decode(encoded, nullptr); // Unknown error positions
     }
     catch(const std::runtime_error& e) {
         std::cout << "ERROR: " << e.what() << std::endl;
@@ -111,9 +77,8 @@ int main()
     // ************************************************
     // Print fixed message
     std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "Fixed (n=" << fixedMessage.size() << "):" << std::endl;
-    for(auto i : fixedMessage)
-        std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)i << std::dec << " ";
+    Utils::PrintVector(fixedMessage, "Fixed", true, true);
+    Utils::PrintVectorAsASCIICharacters(fixedMessage, "ASCII", false);
     std::cout << std::endl << std::endl;
         
     return 0;

@@ -38,10 +38,11 @@ Polynomial::Polynomial(const RSWord* const coefficients, const uint64_t numOfCoe
 {
     if(!galoisField)
         throw std::invalid_argument("GaloisField cannot be nullptr.");
-        
+     
+    m_Coefficients.resize(m_NumOfCoefficients); // Allocate memory
+    
     if(coefficients && m_NumOfCoefficients > 0)
     {
-        m_Coefficients.resize(m_NumOfCoefficients); // Allocate memory
         std::memcpy(m_Coefficients.data(), coefficients, sizeof(RSWord) * m_NumOfCoefficients);
     }
 }

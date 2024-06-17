@@ -9,6 +9,7 @@
 #define Utils_hpp
 
 #include <cstdint>
+//#include <cctype>
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
@@ -27,12 +28,21 @@ class Utils
 public:
     Utils() = delete;
     
+    // Returns true if i is even
     template <IsInteger Integer>
-    static bool IsEven(const Integer& i) noexcept;
+    static bool IsEven(const Integer i) noexcept;
 
+    // Return true if XXXX
+    static bool IsLetter(const uint32_t i) noexcept
+    {
+        return true;
+    }
+    
+    // ?????
     template <IsInteger Integer>
     static std::vector<uint8_t> IntegerToBytes(const Integer& i);
 
+    // ??????
     template <IsInteger Integer>
     static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianess = false);
     
@@ -52,7 +62,7 @@ public:
 };
 
 template <IsInteger Integer>
-bool Utils::IsEven(const Integer& i) noexcept
+bool Utils::IsEven(const Integer i) noexcept
 {
     return !(i & 1);
 }
@@ -121,8 +131,32 @@ void Utils::PrintVectorAsASCIICharacters(const std::vector<Integer>& vec, const 
     else
         std::cout << ": [ ";
     
+    bool printedASCIIbefore = false;
+    
     for(const Integer i : vec)
-        std::cout << static_cast<char>(i);
+    {
+        uint32_t character = static_cast<uint32_t>(i);
+        
+        // Is it a printable ASCII character?
+        if(isprint(character) == 0)
+        {
+            if(printedASCIIbefore)
+            {
+                std::cout << ", ";
+                printedASCIIbefore = false;
+            }
+            
+            std::cout << static_cast<int32_t>(i) << ", ";
+        }
+        else
+        {
+            std::cout << static_cast<char>(i);
+            printedASCIIbefore = true;
+        }
+    }
+    
+    if(!printedASCIIbefore)
+        std::cout << "\b\b \b";
     
     std::cout << " ]" << std::endl;
 }

@@ -13,33 +13,33 @@ namespace RS
 class ReedSolomon
 {
 public:
-    const uint32_t          m_NumOfErrorCorrectingSymbols = 0;
+    const uint64_t          m_NumOfErrorCorrectingSymbols = 0;
     
     const GaloisField*      m_GaloisField = nullptr;
     Polynomial*             m_GeneratorPolynomial = nullptr;
         
     // Methods
-    void        CreateGeneratorPolynomial(const uint32_t numOfECSymbols);
+    void        CreateGeneratorPolynomial(const uint64_t numOfECSymbols);
     
     Polynomial  CalculateSyndromes(const Polynomial& message) const;
-    Polynomial  CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint32_t>* const erasurePositions, const uint32_t n) const;
+    Polynomial  CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint64_t>* const erasurePositions, const uint64_t n) const;
     bool        CheckSyndromes(const Polynomial& syndromes) const;
     
     // Erasure
-    Polynomial  CalculateErasureLocatorPolynomial(const std::vector<uint32_t>& erasurePositions) const;
-    Polynomial  CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial, const uint32_t n) const;
+    Polynomial  CalculateErasureLocatorPolynomial(const std::vector<uint64_t>& erasurePositions) const;
+    Polynomial  CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial, const uint64_t n) const;
     Polynomial  CorrectErasures(const Polynomial& message, const Polynomial& syndromes, const std::vector<uint64_t>& erasurePositions) const;
     
     // Error
-    Polynomial  CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const int32_t n, const Polynomial* const erasureLocatorPolynomial, const int32_t erasureCount) const;
-    const std::vector<uint64_t> FindErrors(const Polynomial& errorLocatorPolynomial, const uint32_t messageLength) const;
+    Polynomial  CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const int64_t n, const Polynomial* const erasureLocatorPolynomial, const int64_t erasureCount) const;
+    const std::vector<uint64_t> FindErrors(const Polynomial& errorLocatorPolynomial, const uint64_t messageLength) const;
     
 public:
-    ReedSolomon(const uint32_t exponent, const uint32_t numOfErrorCorrectingSymbols);
+    ReedSolomon(const uint64_t bitsPerWord, const uint64_t numOfErrorCorrectingSymbols);
     ~ReedSolomon();
     
     std::vector<RSWord> Encode(const std::vector<RSWord>& message) const;
-    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const uint32_t numOfErrorCorrectingSymbols, const std::vector<uint32_t>* const erasurePositions = nullptr) const;
+    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions = nullptr) const;
     
     bool IsMessageCorrupted(const std::vector<RSWord>& message);
 };
