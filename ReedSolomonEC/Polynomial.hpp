@@ -13,13 +13,13 @@ namespace RS
 class Polynomial
 {
 private:
+    const GaloisField*  m_GaloisField = nullptr;
+    
     uint64_t            m_NumOfCoefficients = 0;
     std::vector<RSWord> m_Coefficients;
     
-    const GaloisField*  m_GaloisField = nullptr;
-    
 public:
-    Polynomial(const GaloisField* const galoisField);
+    explicit Polynomial(const GaloisField* const galoisField);
     Polynomial(const std::vector<RSWord>& coefficients, const GaloisField* const galoisField);
     Polynomial(const RSWord* const coefficients, const uint64_t numOfCoefficients, const GaloisField* const galoisField);
     

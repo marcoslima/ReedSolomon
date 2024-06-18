@@ -17,14 +17,24 @@ using namespace RS;
 
 ReedSolomon::ReedSolomon(const uint64_t bitsPerWord, const uint64_t numOfErrorCorrectingSymbols)
     : m_NumOfErrorCorrectingSymbols(numOfErrorCorrectingSymbols)
+    , m_BitsPerWord(bitsPerWord)
 {
     if(numOfErrorCorrectingSymbols < 1)
         throw std::invalid_argument("Number of error correction symbols must be greater than zero.");
     
-    m_GaloisField = new GaloisField(bitsPerWord);
+    m_GaloisField = new GaloisField(m_BitsPerWord);
     m_GeneratorPolynomial = new Polynomial({1}, m_GaloisField);
     
-    CreateGeneratorPolynomial(m_NumOfErrorCorrectingSymbols);
+    CreateGeneratorPolynomial();
+}
+ 
+ReedSolomon::ReedSolomon(const ReedSolomon& other)
+    : m_BitsPerWord(other.m_BitsPerWord)
+    , m_NumOfErrorCorrectingSymbols(other.m_NumOfErrorCorrectingSymbols)
+{
+    m_GaloisField = new GaloisField(m_BitsPerWord);
+    m_GeneratorPolynomial = new Polynomial(m_GaloisField);
+    *m_GeneratorPolynomial = *other.m_GeneratorPolynomial;
 }
 
 ReedSolomon::~ReedSolomon()
@@ -34,11 +44,11 @@ ReedSolomon::~ReedSolomon()
 }
 
 // Create irreducible generator polynomial
-void ReedSolomon::CreateGeneratorPolynomial(const uint64_t numOfECSymbols)
+void ReedSolomon::CreateGeneratorPolynomial()
 {
     Polynomial factor({1, 0}, m_GaloisField);
     
-    for (uint64_t i = 0; i < numOfECSymbols; i++)
+    for (uint64_t i = 0; i < m_NumOfErrorCorrectingSymbols; i++)
     {
         factor[1] = m_GaloisField->GetExponentialTable()[i];
         m_GeneratorPolynomial->Multiply(&factor);
@@ -110,7 +120,7 @@ bool ReedSolomon::CheckSyndromes(const Polynomial& syndromes) const
     return true;
 }
 
-bool ReedSolomon::IsMessageCorrupted(const std::vector<RSWord>& message)
+bool ReedSolomon::IsMessageCorrupted(const std::vector<RSWord>& message) const
 {
     const Polynomial msg(message, m_GaloisField);
     const Polynomial syndromes = CalculateSyndromes(msg);
@@ -284,8 +294,10 @@ const std::vector<uint64_t> ReedSolomon::FindErrors(const Polynomial& errorLocat
     return result;
 }
 
-std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions, uint64_t* const numOfErrorsFound, uint64_t* const numOfErrorsAndErasuresFound) const
+std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions, uint64_t* const numOfErrorsFound) const
 {
+    *numOfErrorsFound = 0;
+    
     if(data.size() == 0)
         throw std::invalid_argument("Data to be decoded cannot have length zero.");
     
@@ -322,8 +334,6 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
         {
             errorPositions.insert(errorPositions.begin(), erasurePositions->begin(), erasurePositions->end());
         }
-        
-        *numOfErrorsAndErasuresFound = errorPositions.size();
         
         // Correct errors
         messagePolynomial = CorrectErasures(messagePolynomial, syndromes, errorPositions);

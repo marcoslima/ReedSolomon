@@ -13,14 +13,16 @@ namespace RS
 class ReedSolomon
 {
 public:
+    const uint64_t          m_BitsPerWord = 0;
     const uint64_t          m_NumOfErrorCorrectingSymbols = 0;
     
     const GaloisField*      m_GaloisField = nullptr;
     Polynomial*             m_GeneratorPolynomial = nullptr;
         
     // Methods
-    void        CreateGeneratorPolynomial(const uint64_t numOfECSymbols);
+    void        CreateGeneratorPolynomial();
     
+    // Syndromes
     Polynomial  CalculateSyndromes(const Polynomial& message) const;
     Polynomial  CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint64_t>* const erasurePositions, const uint64_t n) const;
     bool        CheckSyndromes(const Polynomial& syndromes) const;
@@ -36,12 +38,15 @@ public:
     
 public:
     ReedSolomon(const uint64_t bitsPerWord, const uint64_t numOfErrorCorrectingSymbols);
+    ReedSolomon(const ReedSolomon& other);
+    ReedSolomon& operator=(const ReedSolomon& other) = delete;
+    const ReedSolomon& operator=(const ReedSolomon& other) const = delete;
     ~ReedSolomon();
     
     std::vector<RSWord> Encode(const std::vector<RSWord>& message) const;
-    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions = nullptr, uint64_t* const numOfErrorsFound = nullptr, uint64_t* const numOfErrorsAndErasuresFound = nullptr) const;
+    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions = nullptr, uint64_t* const numOfErrorsFound = nullptr) const;
     
-    bool IsMessageCorrupted(const std::vector<RSWord>& message);
+    bool IsMessageCorrupted(const std::vector<RSWord>& message) const;
 };
 };
 

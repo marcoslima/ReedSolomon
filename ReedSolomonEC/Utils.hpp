@@ -9,7 +9,7 @@
 #define Utils_hpp
 
 #include <cstdint>
-//#include <cctype>
+#include <cctype>
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
@@ -26,26 +26,20 @@ concept IsInteger = std::is_integral_v<IntegerType>;
 class Utils
 {
 public:
+    // Static class, non copyable
     Utils() = delete;
+    Utils(const Utils&) = delete;
+    Utils& operator=(const Utils&) = delete;
     
-    // Returns true if i is even
-    template <IsInteger Integer>
-    static bool IsEven(const Integer i) noexcept;
-
-    // Return true if XXXX
-    static bool IsLetter(const uint32_t i) noexcept
-    {
-        return true;
-    }
-    
-    // ?????
+    // Converts an integer into a vector of bytes
     template <IsInteger Integer>
     static std::vector<uint8_t> IntegerToBytes(const Integer& i);
 
-    // ??????
+    // Converts a vector of bytes into an integer with selectable endianness
     template <IsInteger Integer>
-    static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianess = false);
+    static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianness = false);
     
+    // Converts a string into a vector of characters of type RSWord
     static std::vector<RSWord> StringToRSWordVector(const std::string& str)
     {
         std::vector<RSWord> result(str.length());
@@ -62,12 +56,6 @@ public:
 };
 
 template <IsInteger Integer>
-bool Utils::IsEven(const Integer i) noexcept
-{
-    return !(i & 1);
-}
-
-template <IsInteger Integer>
 std::vector<uint8_t> Utils::IntegerToBytes(const Integer& i)
 {
     std::vector<uint8_t> bytes(sizeof(i));
@@ -77,12 +65,12 @@ std::vector<uint8_t> Utils::IntegerToBytes(const Integer& i)
 }
 
 template <IsInteger Integer>
-Integer Utils::BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianess)
+Integer Utils::BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianness)
 {
     if(sizeof(Integer) > bytes.size())
         throw std::runtime_error("Sizeof vector is to small to hold all bytes of Integer.");
     
-    if(reverseEndianess)
+    if(reverseEndianness)
         std::reverse(bytes.begin(), bytes.end());
     
     Integer i = 0;
