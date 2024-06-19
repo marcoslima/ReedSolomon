@@ -34,7 +34,7 @@ the following restrictions:
 #ifndef GaloisField_hpp
 #define GaloisField_hpp
 
-namespace RS
+namespace NReedSolomon
 {
 class GaloisField
 {

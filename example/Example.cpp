@@ -27,30 +27,33 @@ the following restrictions:
 /*                      (C) 2024 Marc Schöndorf                     */
 /*                            See license                           */
 /*                                                                  */
-/*  Main.cpp                                                        */
+/*  Example.cpp                                                     */
 /*  Created: 09.06.2024                                             */
 /*------------------------------------------------------------------*/
 
-#include <iostream>
-#include <iomanip>
-
-#include "Utils.hpp"
-#include "GaloisField.hpp"
-#include "Polynomial.hpp"
 #include "ReedSolomon.hpp"
 
 using namespace RS;
 
 int main()
 {
-    std::cout << "Reed-Solomon error correction" << std::endl << std::endl;
-    
     const uint64_t bitsPerWord = 8;
     const uint64_t numOfErrorCorrectionSymbols = 5;
     const std::vector<RSWord> message = Utils::StringToRSWordVector("Hello World!");
-
+    
     // Create Reed-Solomon object and encode message
     const ReedSolomon RS(bitsPerWord, numOfErrorCorrectionSymbols);
+    
+    // Print startup header
+    std::cout << "**********************************************" << std::endl;
+    std::cout << "*    " << RS.GetDescription() << "    *" << std::endl;
+    std::cout << "*                                            *" << std::endl;
+    std::cout << "*                  Example                   *" << std::endl;
+    std::cout << "*                                            *" << std::endl;
+    std::cout << "* Lib version: " << RS.GetVersionString() << "                        *" << std::endl;
+    std::cout << "**********************************************" << std::endl << std::endl;
+    
+    // Encode message
     std::vector<RSWord> encoded = RS.Encode(message);
     
     // ************************************************
@@ -70,7 +73,7 @@ int main()
     // Corrupt message
     encoded[0] = 0xFF;
     encoded[1] = 0xFF;
-    encoded[11] = 0x00;
+    encoded[10] = 0x00;
     
     // ************************************************
     // Print corrupted message
@@ -83,11 +86,11 @@ int main()
     // Check for corruption
     std::cout << "----------------------------------------------" << std::endl;
     const bool isCorrupted = RS.IsMessageCorrupted(encoded);
-    std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl << std::endl;
+    std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl << std::endl << std::endl;
     
-    // *******************************                         *****************
+    // ************************************************
     // Decode
-    std::vector<uint64_t> erasurePositions = {11};
+    std::vector<uint64_t> erasurePositions = {10};
     std::vector<RSWord> fixedMessage;
     uint64_t numOfErrorsFound = 0;
     const uint64_t numOfErasures = erasurePositions.size();
@@ -105,12 +108,12 @@ int main()
     // Print fixed message
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "Number of errors found by decoding: " << numOfErrorsFound << std::endl;
-    std::cout << "Number of erasures known before decoding: " << numOfErasures << std::endl;
+    std::cout << "Number of erasures known before decoding: " << numOfErasures << std::endl << std::endl;
     
     Utils::PrintVector(fixedMessage, "Fixed", true, true);
     Utils::PrintVectorAsASCIICharacters(fixedMessage, "ASCII", false);
     
-    std::cout << std::endl << std::endl;
-        
+    std::cout << std::endl;
+    
     return 0;
 }

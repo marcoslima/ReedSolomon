@@ -34,7 +34,7 @@ the following restrictions:
 #ifndef Polynomial_hpp
 #define Polynomial_hpp
 
-namespace RS
+namespace NReedSolomon
 {
 class Polynomial
 {

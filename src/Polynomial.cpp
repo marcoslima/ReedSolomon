@@ -31,16 +31,9 @@ the following restrictions:
 /*  Created: 11.06.2024                                             */
 /*------------------------------------------------------------------*/
 
-#include <iostream>
-#include <iomanip>
-#include <cstdint>
-#include <vector>
+#include "ReedSolomon.hpp"
 
-#include "Utils.hpp"
-#include "GaloisField.hpp"
-#include "Polynomial.hpp"
-
-using namespace RS;
+using namespace NReedSolomon;
 
 Polynomial::Polynomial(const GaloisField* const galoisField)
     : m_GaloisField(galoisField)

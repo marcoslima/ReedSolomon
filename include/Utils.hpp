@@ -34,15 +34,9 @@ the following restrictions:
 #ifndef Utils_hpp
 #define Utils_hpp
 
-#include <cstdint>
-#include <cctype>
-#include <iostream>
-#include <iomanip>
-#include <type_traits>
-#include <algorithm>
-#include <vector>
+#include "ReedSolomon.hpp"
 
-namespace RS
+namespace NReedSolomon
 {
 using RSWord = uint8_t; // The size of a code word
 

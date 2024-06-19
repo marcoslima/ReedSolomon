@@ -27,19 +27,13 @@ the following restrictions:
 /*                      (C) 2024 Marc Schöndorf                     */
 /*                            See license                           */
 /*                                                                  */
-/*  ReedSolomon.cpp                                                 */
+/*  ReedSolomonImpl.cpp                                             */
 /*  Created: 11.06.2024                                             */
 /*------------------------------------------------------------------*/
 
-#include <assert.h>
-#include <iostream>
-
-#include "Utils.hpp"
-#include "GaloisField.hpp"
-#include "Polynomial.hpp"
 #include "ReedSolomon.hpp"
 
-using namespace RS;
+using namespace NReedSolomon;
 
 ReedSolomon::ReedSolomon(const uint64_t bitsPerWord, const uint64_t numOfErrorCorrectingSymbols)
     : m_BitsPerWord(bitsPerWord)
@@ -322,7 +316,8 @@ const std::vector<uint64_t> ReedSolomon::FindErrors(const Polynomial& errorLocat
 
 std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions, uint64_t* const numOfErrorsFound) const
 {
-    *numOfErrorsFound = 0;
+    if(numOfErrorsFound)
+        *numOfErrorsFound = 0;
     
     if(data.size() == 0)
         throw std::invalid_argument("Data to be decoded cannot have length zero.");
@@ -350,7 +345,9 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
         const Polynomial errorLocator = CalculateErrorLocatorPolynomial(forneySyndromes, m_NumOfErrorCorrectingSymbols, nullptr, erasurePositions ? erasurePositions->size() : 0);
         
         std::vector<uint64_t> errorPositions = FindErrors(errorLocator, data.size());
-        *numOfErrorsFound = errorPositions.size();
+        
+        if(numOfErrorsFound)
+            *numOfErrorsFound = errorPositions.size();
         
         if(errorPositions.size() == 0 && (!erasurePositions || erasurePositions->size() == 0))
             throw std::runtime_error("Unable to locate errors.");

@@ -31,13 +31,9 @@ the following restrictions:
 /*  Created: 09.06.2024                                             */
 /*------------------------------------------------------------------*/
 
-#include <cstdint>
-#include <vector>
+#include "ReedSolomon.hpp"
 
-#include "Utils.hpp"
-#include "GaloisField.hpp"
-
-using namespace RS;
+using namespace NReedSolomon;
 
 GaloisField::GaloisField(const uint64_t exponent)
     : m_PrimitivePolynomial(285)
