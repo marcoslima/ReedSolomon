@@ -1,3 +1,5 @@
-Build
-DerivedData
 .DS_Store
+
+# CMake build directory
+build/
+projects/
