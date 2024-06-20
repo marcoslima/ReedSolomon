@@ -53,11 +53,11 @@ public:
     
     // Converts an integer into a vector of bytes
     template <IsInteger Integer>
-    static std::vector<uint8_t> IntegerToBytes(const Integer& i);
+    static std::vector<uint8_t> IntegerToBytes(const Integer i);
 
     // Converts a vector of bytes into an integer with selectable endianness
     template <IsInteger Integer>
-    static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianness = false);
+    static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool reverseEndianness = false);
     
     // Converts a string into a vector of characters of type RSWord
     static std::vector<RSWord> StringToRSWordVector(const std::string& str)
@@ -76,7 +76,7 @@ public:
 };
 
 template <IsInteger Integer>
-std::vector<uint8_t> Utils::IntegerToBytes(const Integer& i)
+std::vector<uint8_t> Utils::IntegerToBytes(const Integer i)
 {
     std::vector<uint8_t> bytes(sizeof(i));
     std::memcpy(bytes.data(), &i, sizeof(i));
@@ -85,7 +85,7 @@ std::vector<uint8_t> Utils::IntegerToBytes(const Integer& i)
 }
 
 template <IsInteger Integer>
-Integer Utils::BytesToInteger(std::vector<uint8_t> bytes, const bool& reverseEndianness)
+Integer Utils::BytesToInteger(std::vector<uint8_t> bytes, const bool reverseEndianness)
 {
     if(sizeof(Integer) > bytes.size())
         throw std::runtime_error("Sizeof vector is to small to hold all bytes of Integer.");
@@ -142,9 +142,7 @@ void Utils::PrintVectorAsASCIICharacters(const std::vector<Integer>& vec, const 
     bool printedASCIIbefore = false;
     
     for(const Integer i : vec)
-    {
-        //uint32_t character = static_cast<uint32_t>(i);
-        
+    {        
         // Is it a printable ASCII character?
         if(isprint(static_cast<int32_t>(i)) == 0)
         {

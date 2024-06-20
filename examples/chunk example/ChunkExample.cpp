@@ -1,4 +1,5 @@
 /*
+
     The zlib License
 
     Copyright (C) 2024 Marc Schöndorf
@@ -20,6 +21,7 @@ the following restrictions:
     misrepresented as being the original software.
 
 3.  This notice may not be removed or altered from any source distribution.
+
 */
 
 /*------------------------------------------------------------------*/
@@ -27,31 +29,26 @@ the following restrictions:
 /*                      (C) 2024 Marc Schöndorf                     */
 /*                            See license                           */
 /*                                                                  */
-/*  ReedSolomon.hpp                                                 */
-/*  Created: 19.06.2024                                             */
+/*  ChunkExample.cpp                                                */
+/*  Created: 09.06.2024                                             */
 /*------------------------------------------------------------------*/
 
-#ifndef ReedSolomon_hpp
-#define ReedSolomon_hpp
+#include "ReedSolomon.hpp"
 
-// System includes
-#include <iostream>
-#include <iomanip>
-#include <cstdint>
-#include <cctype>
-#include <type_traits>
-#include <algorithm>
-#include <vector>
+using namespace RS;
 
-// Lib includes
-#include "ReedSolomonVersion.hpp"
-#include "Utils.hpp"
-#include "GaloisField.hpp"
-#include "Polynomial.hpp"
-#include "ReedSolomonImpl.hpp"
-#include "DataChunker.hpp"
-
-// Namespace alias
-namespace RS = NReedSolomon;
-
-#endif /* ReedSolomon_hpp */
+int main()
+{
+	std::cout << "Chunk example" << std::endl;
+	
+    // Fill large vector
+    std::vector<uint8_t> largeVec(501);
+    for(uint32_t i = 0; i < 501; i++)
+        largeVec[i] = i;
+    
+    const std::vector<std::vector<uint8_t>> chunks = DataChunker::ChunkData<uint8_t>(largeVec, 100);
+    
+    const std::vector<uint8_t> assembled = DataChunker::AssembleChunks<uint8_t>(chunks);
+    
+    return 0;
+}

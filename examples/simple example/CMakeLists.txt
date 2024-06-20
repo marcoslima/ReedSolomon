@@ -11,15 +11,15 @@ cmake_minimum_required(VERSION 3.29)
 
 ###########################################################
 # Our project
-project("ReedSolomon-Example"
+project("ReedSolomon-SimpleExample"
 	VERSION 1.0.0
-	DESCRIPTION "ReedSolomon library example"
+	DESCRIPTION "ReedSolomon library simple example"
 	LANGUAGES CXX
 )
 
 # Main executable
 add_executable("${PROJECT_NAME}"
-	Example.cpp
+	SimpleExample.cpp
 )
 
 ###########################################################
