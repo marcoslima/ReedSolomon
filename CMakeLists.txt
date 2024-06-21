@@ -19,7 +19,7 @@ set(CMAKE_CXX_EXTENSIONS false) # Don't use GNU++
 ###########################################################
 # Our project
 project("ReedSolomon"
-	VERSION 0.1.0
+	VERSION 1.0.0
 	DESCRIPTION "ReedSolomon error correction library"
 	LANGUAGES CXX
 )

@@ -3,10 +3,10 @@
 
 namespace NReedSolomon
 {
-const int32_t RS_VERSION_MAJOR = 0;
-const int32_t RS_VERSION_MINOR = 1;
+const int32_t RS_VERSION_MAJOR = 1;
+const int32_t RS_VERSION_MINOR = 0;
 const int32_t RS_VERSION_PATCH = 0;
-const std::string RS_VERSION_STRING = "v0.1.0";
+const std::string RS_VERSION_STRING = "v1.0.0";
 
 const std::string RS_APP_CMAKE_NAME = "ReedSolomon";
 const std::string RS_APP_CMAKE_DESCRIPTION = "ReedSolomon error correction library";

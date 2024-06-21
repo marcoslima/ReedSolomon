@@ -33,31 +33,41 @@ the following restrictions:
 
 #include "ReedSolomon.hpp"
 
+// Using namespace for ReedSolomon lib
 using namespace RS;
+
+// Constants for setting up ReedSolomon
+const uint64_t bitsPerWord = 8 * sizeof(RSWord);
+const uint64_t numOfErrorCorrectionSymbols = 5;
+
+// Create Reed-Solomon object
+const ReedSolomon rs(bitsPerWord, numOfErrorCorrectionSymbols);
+
+void PrintStartupHeader()
+{
+    std::cout << "**********************************************" << std::endl;
+    std::cout << "*    " << rs.GetDescription() << "    *" << std::endl;
+    std::cout << "*                                            *" << std::endl;
+    std::cout << "*              Simple Example                *" << std::endl;
+    std::cout << "*                                            *" << std::endl;
+    std::cout << "* Lib version: " << rs.GetVersionString() << "                        *" << std::endl;
+    std::cout << "**********************************************" << std::endl << std::endl;
+}
 
 int main()
 {
-    const uint64_t bitsPerWord = 8;
-    const uint64_t numOfErrorCorrectionSymbols = 5;
+    // Print startup header to console
+    PrintStartupHeader();
+    
+    // Create our message to encode. RSWord is the datatype for a symbol (currently uint8_t)
     const std::vector<RSWord> message = Utils::StringToRSWordVector("Hello World!");
     
-    // Create Reed-Solomon object and encode message
-    const ReedSolomon RS(bitsPerWord, numOfErrorCorrectionSymbols);
-    
-    // Print startup header
-    std::cout << "**********************************************" << std::endl;
-    std::cout << "*    " << RS.GetDescription() << "    *" << std::endl;
-    std::cout << "*                                            *" << std::endl;
-    std::cout << "*                  Example                   *" << std::endl;
-    std::cout << "*                                            *" << std::endl;
-    std::cout << "* Lib version: " << RS.GetVersionString() << "                        *" << std::endl;
-    std::cout << "**********************************************" << std::endl << std::endl;
-    
-    // Encode message
-    std::vector<RSWord> encoded = RS.Encode(message);
+    // ************************************************
+    // Encode our message
+    std::vector<RSWord> encoded = rs.Encode(message);
     
     // ************************************************
-    // Print message
+    // Print original message
     std::cout << "----------------------------------------------" << std::endl;
     Utils::PrintVector(message, "Message", true, true);
     Utils::PrintVectorAsASCIICharacters(message, "ASCII", false);
@@ -70,10 +80,13 @@ int main()
     std::cout << std::endl << std::endl;
     
     // ************************************************
-    // Corrupt message
-    encoded[0] = 0xFF;
-    encoded[1] = 0xFF;
-    encoded[10] = 0x00;
+    // Corrupt message with random letters (errors with unknown position)
+    encoded[0] = 'X';
+    encoded[1] = 'X';
+    
+    // Treat this one as erasure with known position
+    encoded[10] = 'Q';
+    std::vector<uint64_t> erasurePositions = {10};
     
     // ************************************************
     // Print corrupted message
@@ -85,19 +98,18 @@ int main()
     // ************************************************
     // Check for corruption
     std::cout << "----------------------------------------------" << std::endl;
-    const bool isCorrupted = RS.IsMessageCorrupted(encoded);
+    const bool isCorrupted = rs.IsMessageCorrupted(encoded);
     std::cout << "Is corrupted: " << (isCorrupted ? "Yes" : "No") << std::endl << std::endl << std::endl;
     
     // ************************************************
-    // Decode
-    std::vector<uint64_t> erasurePositions = {10};
+    // Decode corrupted message and fix it
     std::vector<RSWord> fixedMessage;
     uint64_t numOfErrorsFound = 0;
     const uint64_t numOfErasures = erasurePositions.size();
     
     try {
-        fixedMessage = RS.Decode(encoded, &erasurePositions, &numOfErrorsFound); // With known erasure positions
-        //fixedMessage = RS.Decode(encoded, nullptr, &numOfErrorsFound); // Unknown error positions
+        fixedMessage = rs.Decode(encoded, &erasurePositions, &numOfErrorsFound); // With known erasure positions
+        //fixedMessage = rs.Decode(encoded, nullptr, &numOfErrorsFound); // Unknown erasure/error positions
     }
     catch(const std::runtime_error& e) {
         std::cout << "ERROR: " << e.what() << std::endl;
