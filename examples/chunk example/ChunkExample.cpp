@@ -35,7 +35,15 @@ the following restrictions:
 
 #include "ReedSolomon.hpp"
 
+// Using namespace for ReedSolomon lib
 using namespace RS;
+
+// Constants for setting up ReedSolomon
+const uint64_t bitsPerWord = 8 * sizeof(RSWord);
+const uint64_t numOfErrorCorrectionSymbols = 5;
+
+// Create Reed-Solomon object
+const ReedSolomon rs(bitsPerWord, numOfErrorCorrectionSymbols);
 
 int main()
 {
