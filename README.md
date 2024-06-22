@@ -37,7 +37,7 @@ TODO
 TODO
 
 ## How to use it
-First include the main header file of the library:
+Include the main header file of the library in your project:
 ```cpp
 #include "ReedSolomon.hpp"
 ```
@@ -45,3 +45,4 @@ TODO
 
 ## Included Examples
 TODO
+

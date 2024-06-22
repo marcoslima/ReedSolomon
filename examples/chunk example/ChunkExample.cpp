@@ -45,10 +45,25 @@ const uint64_t numOfErrorCorrectionSymbols = 5;
 // Create Reed-Solomon object
 const ReedSolomon rs(bitsPerWord, numOfErrorCorrectionSymbols);
 
+void PrintStartupHeader()
+{
+    std::cout << "**********************************************" << std::endl;
+    std::cout << "*    " << rs.GetDescription() << "    *" << std::endl;
+    std::cout << "*                                            *" << std::endl;
+    std::cout << "*              Chunking Example              *" << std::endl;
+    std::cout << "*                                            *" << std::endl;
+    std::cout << "* Lib version: " << rs.GetVersionString() << "                        *" << std::endl;
+    std::cout << "**********************************************" << std::endl << std::endl;
+}
+
 int main()
 {
-	std::cout << "Chunk example" << std::endl;
-	
+    // Print startup header to console
+    PrintStartupHeader();
+    
+    // Use 569 bytes/characters
+    std::string longString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis congue, quam eget imperdiet sollicitudin, libero ipsum tincidunt massa, at vulputate leo erat ut urna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet nisi ex. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean efficitur consequat mauris, ac scelerisque est suscipit sed. Suspendisse tempor venenatis est, a ultricies mi gravida et. Vestibulum laoreet velit lorem, ac sollicitudin tortor rutrum vel. Etiam iaculis velit quis aliquam.";
+        
     // Fill large vector
     std::vector<uint8_t> largeVec(501);
     for(uint32_t i = 0; i < 501; i++)
