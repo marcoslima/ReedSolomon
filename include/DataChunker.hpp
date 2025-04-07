@@ -160,18 +160,26 @@ std::vector<T> DataChunker::AssembleChunks(const std::vector<std::vector<T>>& ch
         totalSize += chunks[i].size();
     
     // Allocate memory
-    std::vector<T> assembled(totalSize);
+    std::vector<T> assembled;
+    assembled.reserve(totalSize);
     
     // Assemble chunks
-    uint64_t totalIndex = 0;
-    for(uint64_t chunk = 0; chunk < chunks.size(); chunk++)
+    for (auto chunk : chunks)
     {
-        for(uint64_t index = 0; index < chunks[chunk].size(); index++)
+        std::ranges::transform(chunk, std::back_inserter(assembled), [](const auto& byte)
         {
-            assembled[totalIndex] = chunks[chunk][index];
-            totalIndex++;
-        }
+            return byte;
+        });
     }
+    // uint64_t totalIndex = 0;
+    // for(uint64_t chunk = 0; chunk < chunks.size(); chunk++)
+    // {
+    //     for(uint64_t index = 0; index < chunks[chunk].size(); index++)
+    //     {
+    //         assembled[totalIndex] = chunks[chunk][index];
+    //         totalIndex++;
+    //     }
+    // }
     
     return assembled;
 }
