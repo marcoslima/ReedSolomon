@@ -48,11 +48,11 @@ public:
     
     // Chunk data
     template <typename T>
-    static std::vector<std::vector<T>> ChunkData(const std::vector<T>& data, const uint64_t chunkSize);
+    static std::vector<std::vector<T>> ChunkData(const std::vector<T>& data, uint64_t chunkSize);
     
     // Chunk string
     template <typename T>
-    static std::vector<std::vector<T>> ChunkString(const std::string& str, const uint64_t chunkSize);
+    static std::vector<std::vector<T>> ChunkString(const std::string& str, uint64_t chunkSize);
     
     // Assemble chunks to continuous data stream
     template <typename T>
@@ -62,14 +62,14 @@ public:
 template <typename T>
 std::vector<std::vector<T>> DataChunker::ChunkData(const std::vector<T>& data, const uint64_t chunkSize)
 {
-    if(data.size() < 1)
+    if(data.empty())
         throw std::runtime_error("Data size is zero.");
     
     uint64_t numOfChunks = data.size() / chunkSize;
     const uint64_t remainderChunkSize = data.size() % chunkSize;
     
     if(remainderChunkSize > 0)
-        numOfChunks++;
+        ++numOfChunks;
     
     // Chunked data vector
     std::vector<std::vector<T>> allChunks(numOfChunks);
@@ -109,7 +109,7 @@ std::vector<std::vector<T>> DataChunker::ChunkString(const std::string& str, con
     if(chunkSize < 1)
         throw std::invalid_argument("Chunk size cannot be smaller than one byte.");
     
-    if(str.size() < 1)
+    if(str.empty())
         throw std::runtime_error("Data size is zero.");
     
     uint64_t numOfChunks = str.size() / chunkSize;
@@ -134,9 +134,9 @@ std::vector<std::vector<T>> DataChunker::ChunkString(const std::string& str, con
     uint64_t writtenInCurrentChunk = 0;
     uint64_t currentChunkIndex = 0;
     
-    for(uint64_t i = 0; i < str.size(); i++)
+    for(auto i : str)
     {
-        allChunks[currentChunkIndex][writtenInCurrentChunk] = str[i];
+        allChunks[currentChunkIndex][writtenInCurrentChunk] = i;
         writtenInCurrentChunk++;
         
         if(writtenInCurrentChunk >= chunkSize)
@@ -175,6 +175,6 @@ std::vector<T> DataChunker::AssembleChunks(const std::vector<std::vector<T>>& ch
     
     return assembled;
 }
-};
+}
 
 #endif /* DataChunker_hpp */
