@@ -32,7 +32,7 @@ the following restrictions:
 /*------------------------------------------------------------------*/
 
 #include "ReedSolomon.hpp"
-
+#include <ranges>
 using namespace NReedSolomon;
 
 ReedSolomon::ReedSolomon(const uint64_t bitsPerWord, const uint64_t numOfErrorCorrectingSymbols)
@@ -54,6 +54,8 @@ ReedSolomon::ReedSolomon(const ReedSolomon& other)
 {
     m_GaloisField = new GaloisField(m_BitsPerWord);
     m_GeneratorPolynomial = new Polynomial(m_GaloisField);
+    if (other.m_GeneratorPolynomial == nullptr)
+        throw std::invalid_argument("Generator polynomial cannot be nullptr.");
     *m_GeneratorPolynomial = *other.m_GeneratorPolynomial;
 }
 
@@ -64,7 +66,7 @@ ReedSolomon::~ReedSolomon()
 }
 
 // Create irreducible generator polynomial
-void ReedSolomon::CreateGeneratorPolynomial()
+void ReedSolomon::CreateGeneratorPolynomial() const
 {
     Polynomial factor({1, 0}, m_GaloisField);
     
@@ -77,7 +79,7 @@ void ReedSolomon::CreateGeneratorPolynomial()
 
 std::vector<RSWord> ReedSolomon::Encode(const std::vector<RSWord>& message) const
 {
-    if(message.size() == 0)
+    if(message.empty())
         throw std::invalid_argument("Cannot encode empty message.");
     
     Polynomial messagePolynomial(message, m_GaloisField);
@@ -87,10 +89,10 @@ std::vector<RSWord> ReedSolomon::Encode(const std::vector<RSWord>& message) cons
     messagePolynomial.Divide(m_GeneratorPolynomial, nullptr, &remainder);
     
     std::vector<RSWord> result(messagePolynomial.GetNumberOfCoefficients());
-    std::copy(message.begin(), message.end(), result.begin());
+    std::ranges::copy(message, result.begin());
     
     // Append remainder to result (remainder are the error correction symbols)
-    std::copy(remainder.GetCoefficients()->begin(), remainder.GetCoefficients()->end(), result.begin() + message.size());
+    std::ranges::copy(*remainder.GetCoefficients(), result.begin() + static_cast<coef_diff_type>(message.size()));
     
     return result;
 }
@@ -102,8 +104,8 @@ Polynomial ReedSolomon::CalculateSyndromes(const Polynomial& message) const
     
     for(uint64_t i = 0; i < m_NumOfErrorCorrectingSymbols; i++)
         tmp[m_NumOfErrorCorrectingSymbols - i - 1] = message.Evaluate(m_GaloisField->GetExponentialTable()[i]);
-    
-    return Polynomial(tmp, m_GaloisField);
+
+    return {tmp, m_GaloisField};
 }
 
 Polynomial ReedSolomon::CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint64_t>* const erasurePositions, const uint64_t n) const
@@ -113,7 +115,7 @@ Polynomial ReedSolomon::CalculateForneySyndromes(const Polynomial& syndromes, co
     
     if(erasurePositions)
     {
-        for(uint64_t i : *erasurePositions)
+        for(const uint64_t i : *erasurePositions)
         {
             const RSWord reverse = static_cast<RSWord>(n) - i - 1;
             const RSWord x = m_GaloisField->GetExponentialTable()[reverse];
@@ -129,7 +131,8 @@ Polynomial ReedSolomon::CalculateForneySyndromes(const Polynomial& syndromes, co
     return forneySyndromes;
 }
 
-bool ReedSolomon::CheckSyndromes(const Polynomial& syndromes) const
+// ReSharper disable once CppMemberFunctionMayBeStatic
+bool ReedSolomon::CheckSyndromes(const Polynomial& syndromes) const // NOLINT(*-convert-member-functions-to-static)
 {
     for(uint64_t i = 0; i < syndromes.GetNumberOfCoefficients(); i++)
     {
@@ -153,7 +156,7 @@ Polynomial ReedSolomon::CalculateErasureLocatorPolynomial(const std::vector<uint
     Polynomial erasureLocator({1}, m_GaloisField);
     Polynomial factor({0, 1}, m_GaloisField);
 
-    for(uint64_t i : erasurePositions)
+    for(const uint64_t i : erasurePositions)
     {
         factor[0] = m_GaloisField->GetExponentialTable()[i];
         erasureLocator.Multiply(&factor);
@@ -162,7 +165,8 @@ Polynomial ReedSolomon::CalculateErasureLocatorPolynomial(const std::vector<uint
     return erasureLocator;
 }
 
-Polynomial ReedSolomon::CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial, const uint64_t n) const
+// ReSharper disable once CppMemberFunctionMayBeStatic
+Polynomial ReedSolomon::CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial, const uint64_t n) const // NOLINT(*-convert-member-functions-to-static)
 {
     Polynomial result = syndromes;
     result.Multiply(&erasureLocatorPolynomial);
@@ -218,7 +222,7 @@ Polynomial ReedSolomon::CorrectErasures(const Polynomial& message, const Polynom
     return result;
 }
 
-Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const int64_t n, const Polynomial* const erasureLocatorPolynomial, const int64_t erasureCount) const
+Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const uint64_t n, const Polynomial* const erasureLocatorPolynomial, const uint64_t erasureCount) const
 {
     Polynomial errorLocations({1}, m_GaloisField);
     Polynomial oldLocations({1}, m_GaloisField);
@@ -229,14 +233,15 @@ Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndro
         errorLocations = *erasureLocatorPolynomial;
         oldLocations = *erasureLocatorPolynomial;
     }
-    
-    int64_t syndromeShift = 0;
-    
+
     //if(syndromes.GetNumberOfCoefficients() > n)
     //    syndromeShift = syndromes.GetNumberOfCoefficients() - n;
-            
-    for(int64_t i = n - erasureCount - 1; i >= 0; i--)
+
+    // for(int64_t i = n - (erasureCount - 1); i >= 0; i--)
+    // "erasureCount - 1": "-1" removed since iota is already exclusive.
+    for (const auto i : std::ranges::reverse_view(std::views::iota(0U, n - erasureCount)))
     {
+        constexpr int64_t syndromeShift = 0;
         const uint64_t k = i + syndromeShift + erasureCount;
         RSWord delta = syndromes[k];
         
@@ -269,15 +274,16 @@ Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndro
         leadingZeros++;
     
     errorLocations.TrimBeginning(leadingZeros);
-    
-    const int64_t numErrors = errorLocations.GetNumberOfCoefficients() - 1;
+
+    const uint64_t numErrors = errorLocations.GetNumberOfCoefficients() - 1;
     if(numErrors * 2 - erasureCount > n)
         throw std::runtime_error("Too many errors to correct.");
     
     return errorLocations;
 }
 
-const std::vector<uint64_t> ReedSolomon::FindErrors(const Polynomial& errorLocatorPolynomial, const uint64_t messageLength) const
+std::vector<uint64_t> ReedSolomon::FindErrors(const Polynomial &errorLocatorPolynomial,
+                                              const uint64_t messageLength) const
 {
     std::vector<uint64_t> result;
     
@@ -303,12 +309,12 @@ const std::vector<uint64_t> ReedSolomon::FindErrors(const Polynomial& errorLocat
     if(result.size() != numErrors)
         throw std::runtime_error("Chien search found too many or to few errors for the erasure locator polynomial.");
     
-    for(uint64_t i = 0; i < result.size(); i++)
+    for(unsigned long & i : result)
     {
-        if(result[i] >= messageLength)
+        if(i >= messageLength)
             throw std::runtime_error("Unexpected error while searching errors in message.");
         
-        result[i] = messageLength - result[i] - 1;
+        i = messageLength - i - 1;
     }
     
     return result;
@@ -319,7 +325,7 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
     if(numOfErrorsFound)
         *numOfErrorsFound = 0;
     
-    if(data.size() == 0)
+    if(data.empty())
         throw std::invalid_argument("Data to be decoded cannot have length zero.");
     
     Polynomial messagePolynomial(data, m_GaloisField);
@@ -331,7 +337,7 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
             throw std::runtime_error("Too many erasures to be corrected.");
         
         // Zero out erasure positions in message
-        for(uint64_t i : *erasurePositions)
+        for(const uint64_t i : *erasurePositions)
             messagePolynomial[i] = 0;
     }
     
@@ -349,7 +355,7 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
         if(numOfErrorsFound)
             *numOfErrorsFound = errorPositions.size();
         
-        if(errorPositions.size() == 0 && (!erasurePositions || erasurePositions->size() == 0))
+        if(errorPositions.empty() && (!erasurePositions || erasurePositions->empty()))
             throw std::runtime_error("Unable to locate errors.");
         
         // Append erasure positions to error positions vector
@@ -364,7 +370,7 @@ std::vector<RSWord> ReedSolomon::Decode(const std::vector<RSWord>& data, const s
     
     // Cut error correcting symbols from message and return message
     std::vector<RSWord> result(data.size() - m_NumOfErrorCorrectingSymbols);
-    std::copy(messagePolynomial.GetCoefficients()->begin(), messagePolynomial.GetCoefficients()->end() - m_NumOfErrorCorrectingSymbols, result.begin());
+    std::copy(messagePolynomial.GetCoefficients()->begin(), messagePolynomial.GetCoefficients()->end() - static_cast<coef_diff_type>(m_NumOfErrorCorrectingSymbols), result.begin());
     
     return result;
 }

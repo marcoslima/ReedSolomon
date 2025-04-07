@@ -32,6 +32,7 @@ the following restrictions:
 /*------------------------------------------------------------------*/
 
 
+// ReSharper disable CppMemberFunctionMayBeStatic
 #ifndef ReedSolomonImpl_hpp
 #define ReedSolomonImpl_hpp
 
@@ -42,47 +43,46 @@ class ReedSolomon
 public:
     const uint64_t          m_BitsPerWord = 0;
     const uint64_t          m_NumOfErrorCorrectingSymbols = 0;
-    
+
     const GaloisField*      m_GaloisField = nullptr;
     Polynomial*             m_GeneratorPolynomial = nullptr;
-        
+
     // Methods
-    void        CreateGeneratorPolynomial();
-    
+    void        CreateGeneratorPolynomial() const;
+
     // Syndromes
-    Polynomial  CalculateSyndromes(const Polynomial& message) const;
-    Polynomial  CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint64_t>* const erasurePositions, const uint64_t n) const;
-    bool        CheckSyndromes(const Polynomial& syndromes) const;
-    
+    [[nodiscard]] Polynomial  CalculateSyndromes(const Polynomial& message) const;
+    Polynomial  CalculateForneySyndromes(const Polynomial& syndromes, const std::vector<uint64_t>*erasurePositions, uint64_t n) const;
+    [[nodiscard]] bool        CheckSyndromes(const Polynomial& syndromes) const;
+
     // Erasure
-    Polynomial  CalculateErasureLocatorPolynomial(const std::vector<uint64_t>& erasurePositions) const;
-    Polynomial  CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial, const uint64_t n) const;
-    Polynomial  CorrectErasures(const Polynomial& message, const Polynomial& syndromes, const std::vector<uint64_t>& erasurePositions) const;
-    
+    [[nodiscard]] Polynomial  CalculateErasureLocatorPolynomial(const std::vector<uint64_t>& erasurePositions) const;
+    [[nodiscard]] Polynomial  CalculateErrorEvaluatorPolynomial(const Polynomial& syndromes, const Polynomial& erasureLocatorPolynomial, uint64_t n) const;
+    [[nodiscard]] Polynomial  CorrectErasures(const Polynomial& message, const Polynomial& syndromes, const std::vector<uint64_t>& erasurePositions) const;
+
     // Error
-    Polynomial  CalculateErrorLocatorPolynomial(const Polynomial& syndromes, const int64_t n, const Polynomial* const erasureLocatorPolynomial, const int64_t erasureCount) const;
-    const std::vector<uint64_t> FindErrors(const Polynomial& errorLocatorPolynomial, const uint64_t messageLength) const;
-    
-public:
-    ReedSolomon(const uint64_t bitsPerWord, const uint64_t numOfErrorCorrectingSymbols);
+    Polynomial  CalculateErrorLocatorPolynomial(const Polynomial &syndromes, uint64_t n, const Polynomial *erasureLocatorPolynomial, uint64_t erasureCount) const;
+    [[nodiscard]] std::vector<uint64_t> FindErrors(const Polynomial &errorLocatorPolynomial,
+                                                   uint64_t messageLength) const;
+
+    ReedSolomon(uint64_t bitsPerWord, uint64_t numOfErrorCorrectingSymbols);
     ReedSolomon(const ReedSolomon& other);
     ReedSolomon& operator=(const ReedSolomon& other) = delete;
     const ReedSolomon& operator=(const ReedSolomon& other) const = delete;
     ~ReedSolomon();
-    
-    std::vector<RSWord> Encode(const std::vector<RSWord>& message) const;
-    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>* const erasurePositions = nullptr, uint64_t* const numOfErrorsFound = nullptr) const;
-    
-    bool IsMessageCorrupted(const std::vector<RSWord>& message) const;
-    
+
+    [[nodiscard]] std::vector<RSWord> Encode(const std::vector<RSWord>& message) const;
+    std::vector<RSWord> Decode(const std::vector<RSWord>& data, const std::vector<uint64_t>*erasurePositions = nullptr, uint64_t*numOfErrorsFound = nullptr) const;
+
+    [[nodiscard]] bool IsMessageCorrupted(const std::vector<RSWord>& message) const;
+
     // Version info
-    int32_t GetVersionMajor() const { return RS_VERSION_MAJOR; }
-    int32_t GetVersionMinor() const { return RS_VERSION_MINOR; }
-    int32_t GetVersionPatch() const { return RS_VERSION_PATCH; }
-    std::string GetVersionString() const { return RS_VERSION_STRING; }
-    
-    std::string GetDescription() const { return RS_APP_CMAKE_DESCRIPTION; }
+    [[nodiscard]] int32_t GetVersionMajor()const{ return RS_VERSION_MAJOR; } // NOLINT(*-convert-member-functions-to-static)
+    [[nodiscard]] int32_t GetVersionMinor()const{ return RS_VERSION_MINOR; } // NOLINT(*-convert-member-functions-to-static)
+    [[nodiscard]] int32_t GetVersionPatch()const{ return RS_VERSION_PATCH; } // NOLINT(*-convert-member-functions-to-static)
+    [[nodiscard]] std::string GetVersionString()const{ return RS_VERSION_STRING; } // NOLINT(*-convert-member-functions-to-static)
+    [[nodiscard]] std::string GetDescription()const{ return RS_APP_CMAKE_DESCRIPTION; } // NOLINT(*-convert-member-functions-to-static)
 };
-};
+}
 
 #endif /* ReedSolomonImpl_hpp */

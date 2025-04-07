@@ -157,7 +157,7 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
     
     for(uint64_t i = 0; i < upperLimit; i++)
     {
-        tmp[i] = m_GaloisField->Divide(tmp[i], normalizer); // Needed for non monic polynomials
+        tmp[i] = m_GaloisField->Divide(tmp[i], normalizer); // Needed for non-monic polynomials
         const RSWord coefficient = tmp[i];
         
         // Skip log(0)
@@ -185,7 +185,7 @@ void Polynomial::Divide(const Polynomial* const divisor, Polynomial* const quoti
 
 void Polynomial::Reverse()
 {
-    std::reverse(m_Coefficients.begin(), m_Coefficients.end());
+    std::ranges::reverse(m_Coefficients);
 }
 
 RSWord Polynomial::Evaluate(const RSWord x) const
@@ -246,7 +246,7 @@ void Polynomial::TrimBeginning(const uint64_t numElementsToTrim)
         throw std::invalid_argument("Cannot trim more elements than the size of the polynomial.");
     
     m_NumOfCoefficients -= numElementsToTrim;
-    m_Coefficients.erase(m_Coefficients.begin(), m_Coefficients.begin() + numElementsToTrim);
+    m_Coefficients.erase(m_Coefficients.begin(), m_Coefficients.begin() + static_cast<coef_diff_type>(numElementsToTrim));
 }
 
 void Polynomial::Print(const std::string& name, const bool printAsHexadecimal, const bool printSize) const

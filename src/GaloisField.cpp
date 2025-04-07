@@ -59,7 +59,7 @@ void GaloisField::PrecomputeTables()
     
     // Precompute
     uint64_t x = 1;
-    for(uint64_t i = 1; i < (m_Cardinality - 1); i++)
+    for(uint64_t i = 1; i < m_Cardinality - 1; i++)
     {
         x *= 2;
         
@@ -71,16 +71,18 @@ void GaloisField::PrecomputeTables()
     }
     
     // Extend exponential table to double the size for optimization (don't need modulo later)
-    for(uint64_t i = (m_Cardinality - 1); i < (m_Cardinality - 1) * 2; i++)
+    for(uint64_t i = m_Cardinality - 1; i < (m_Cardinality - 1) * 2; i++)
         m_ExponentialTable[i] = m_ExponentialTable[i - (m_Cardinality - 1)];
 }
 
-RSWord GaloisField::Add(const RSWord x, const RSWord y) const noexcept
+// ReSharper disable once CppMemberFunctionMayBeStatic
+RSWord GaloisField::Add(const RSWord x, const RSWord y) const noexcept // NOLINT(*-convert-member-functions-to-static)
 {
     return x ^ y;
 }
 
-RSWord GaloisField::Subtract(const RSWord x, const RSWord y) const noexcept
+// ReSharper disable once CppMemberFunctionMayBeStatic
+RSWord GaloisField::Subtract(const RSWord x, const RSWord y) const noexcept // NOLINT(*-convert-member-functions-to-static)
 {
     return x ^ y; // Same as addition for binary Galois field (mod 2)
 }
@@ -103,21 +105,21 @@ RSWord GaloisField::Divide(const RSWord x, const RSWord y) const
         return 0;
         
     //const uint64_t index = (m_LogarithmicTable[x] + (m_Cardinality - 1) - m_LogarithmicTable[y]) % (m_Cardinality - 1);
-    const uint64_t index = (m_LogarithmicTable[x] - m_LogarithmicTable[y] + (m_Cardinality - 1));
+    const uint64_t index = m_LogarithmicTable[x] - m_LogarithmicTable[y] + (m_Cardinality - 1);
     
     return m_ExponentialTable[index];
 }
 
 RSWord GaloisField::Pow(const RSWord x, const RSWord power) const
 {
-    const uint64_t index = (m_LogarithmicTable[x] * power) % (m_Cardinality - 1);
+    const uint64_t index = m_LogarithmicTable[x] * power % (m_Cardinality - 1);
     
     return m_ExponentialTable[index];
 }
 
 RSWord GaloisField::Inverse(const RSWord x) const
 {
-    const uint64_t index = (m_Cardinality - 1) - m_LogarithmicTable[x];
+    const uint64_t index = m_Cardinality - 1 - m_LogarithmicTable[x];
     
     return m_ExponentialTable[index];
 }

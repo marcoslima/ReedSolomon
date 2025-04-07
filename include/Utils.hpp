@@ -46,33 +46,33 @@ concept IsInteger = std::is_integral_v<IntegerType>;
 class Utils
 {
 public:
-    // Static class, non copyable
+    // Static class, non-copyable
     Utils() = delete;
     Utils(const Utils&) = delete;
     Utils& operator=(const Utils&) = delete;
     
     // Converts an integer into a vector of bytes
     template <IsInteger Integer>
-    static std::vector<uint8_t> IntegerToBytes(const Integer i);
+    static std::vector<uint8_t> IntegerToBytes(Integer i);
 
     // Converts a vector of bytes into an integer with selectable endianness
     template <IsInteger Integer>
-    static Integer BytesToInteger(std::vector<uint8_t> bytes, const bool reverseEndianness = false);
+    static Integer BytesToInteger(std::vector<uint8_t> bytes, bool reverseEndianness = false);
     
     // Converts a string into a vector of characters of type RSWord
     static std::vector<RSWord> StringToRSWordVector(const std::string& str)
     {
         std::vector<RSWord> result(str.length());
-        std::copy(str.begin(), str.end(), result.begin());
+        std::ranges::copy(str, result.begin());
         
         return result;
     }
     
     template <IsInteger Integer>
-    static void PrintVector(const std::vector<Integer>& vec, const std::string& name, const bool printAsHexadecimal = true, const bool printSize = true);
+    static void PrintVector(const std::vector<Integer>& vec, const std::string& name, bool printAsHexadecimal = true, bool printSize = true);
     
     template <IsInteger Integer>
-    static void PrintVectorAsASCIICharacters(const std::vector<Integer>& vec, const std::string& name, const bool printSize = true);
+    static void PrintVectorAsASCIICharacters(const std::vector<Integer>& vec, const std::string& name, bool printSize = true);
 };
 
 template <IsInteger Integer>
@@ -91,7 +91,7 @@ Integer Utils::BytesToInteger(std::vector<uint8_t> bytes, const bool reverseEndi
         throw std::runtime_error("Sizeof vector is to small to hold all bytes of Integer.");
     
     if(reverseEndianness)
-        std::reverse(bytes.begin(), bytes.end());
+        std::ranges::reverse(bytes);
     
     Integer i = 0;
     std::memcpy(&i, bytes.data(), sizeof(Integer));
@@ -166,6 +166,6 @@ void Utils::PrintVectorAsASCIICharacters(const std::vector<Integer>& vec, const 
     
     std::cout << " ]" << std::endl;
 }
-};
- 
+}
+
 #endif /* Utils_hpp */
