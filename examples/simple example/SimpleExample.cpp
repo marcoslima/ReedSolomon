@@ -37,8 +37,8 @@ the following restrictions:
 using namespace RS;
 
 // Constants for setting up ReedSolomon
-const uint64_t bitsPerWord = 8 * sizeof(RSWord);
-const uint64_t numOfErrorCorrectionSymbols = 5;
+constexpr uint64_t bitsPerWord = 8 * sizeof(RSWord);
+constexpr uint64_t numOfErrorCorrectionSymbols = 5;
 
 // Create Reed-Solomon object
 const ReedSolomon rs(bitsPerWord, numOfErrorCorrectionSymbols);
@@ -86,7 +86,7 @@ int main()
     
     // Treat this one as erasure with known position
     encoded[10] = 'Q';
-    std::vector<uint64_t> erasurePositions = {10};
+    const std::vector<uint64_t> erasurePositions = {10};
     
     // ************************************************
     // Print corrupted message
