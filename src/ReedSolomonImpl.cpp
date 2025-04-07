@@ -238,8 +238,8 @@ Polynomial ReedSolomon::CalculateErrorLocatorPolynomial(const Polynomial& syndro
     //    syndromeShift = syndromes.GetNumberOfCoefficients() - n;
 
     // for(int64_t i = n - (erasureCount - 1); i >= 0; i--)
-    // the second "+1U" is to include the last element, since iota is exclusive
-    for (const auto i : std::ranges::reverse_view(std::views::iota(0U, n - erasureCount + 1U + 1U)))
+    // "erasureCount - 1": "-1" removed since iota is already exclusive.
+    for (const auto i : std::ranges::reverse_view(std::views::iota(0U, n - erasureCount)))
     {
         constexpr int64_t syndromeShift = 0;
         const uint64_t k = i + syndromeShift + erasureCount;
