@@ -34,7 +34,7 @@ the following restrictions:
 #ifndef Utils_hpp
 #define Utils_hpp
 
-#include "ReedSolomon.hpp"
+#include <cstring>
 
 namespace NReedSolomon
 {
