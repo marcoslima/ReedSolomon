@@ -38,7 +38,6 @@ namespace NReedSolomon
 {
 class GaloisField
 {
-private:
     const uint64_t          m_PrimitivePolynomial;
     
     const uint64_t          m_Characteristic = 2;
@@ -51,21 +50,21 @@ private:
     void PrecomputeTables();
     
 public:
-    GaloisField(const uint64_t exponent);
+    explicit GaloisField(uint64_t exponent);
     
-    RSWord Add(const RSWord x, const RSWord y) const noexcept;
-    RSWord Subtract(const RSWord x, const RSWord y) const noexcept;
-    RSWord Multiply(const RSWord x, const RSWord y) const;
-    RSWord Divide(const RSWord x, const RSWord y) const;
-    RSWord Pow(const RSWord x, const RSWord power) const;
-    RSWord Inverse(const RSWord x) const;
+    [[nodiscard]] RSWord Add(RSWord x, RSWord y) const noexcept;
+    [[nodiscard]] RSWord Subtract(RSWord x, RSWord y) const noexcept;
+    [[nodiscard]] RSWord Multiply(RSWord x, RSWord y) const;
+    [[nodiscard]] RSWord Divide(RSWord x, RSWord y) const;
+    [[nodiscard]] RSWord Pow(RSWord x, RSWord power) const;
+    [[nodiscard]] RSWord Inverse(RSWord x) const;
     
-    const std::vector<RSWord>& GetExponentialTable() const noexcept { return m_ExponentialTable; }
-    const std::vector<RSWord>& GetLogarithmicTable() const noexcept { return m_LogarithmicTable; }
+    [[nodiscard]] const std::vector<RSWord>& GetExponentialTable() const noexcept { return m_ExponentialTable; }
+    [[nodiscard]] const std::vector<RSWord>& GetLogarithmicTable() const noexcept { return m_LogarithmicTable; }
     
-    uint64_t    GetCharacteristic() const   { return m_Characteristic; }
-    uint64_t    GetExponent() const         { return m_Exponent; }
-    uint64_t    GetCardinality() const      { return m_Cardinality; }
+    [[nodiscard]] uint64_t    GetCharacteristic() const   { return m_Characteristic; }
+    [[nodiscard]] uint64_t    GetExponent() const         { return m_Exponent; }
+    [[nodiscard]] uint64_t    GetCardinality() const      { return m_Cardinality; }
 };
 };
 
